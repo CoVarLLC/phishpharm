@@ -1,0 +1,1879 @@
+{
+  "rule_based": {
+    "threshold": 5.0,
+    "analysis": {
+      "counts": {
+        "malicious_total": 27,
+        "genuine_total": 11,
+        "true_positive": 11,
+        "false_negative": 16,
+        "true_negative": 11,
+        "false_positive": 0,
+        "errored": 0
+      },
+      "metrics": {
+        "accuracy": 0.579,
+        "precision": 1.0,
+        "recall_detection_rate": 0.407,
+        "f1": 0.579,
+        "false_positive_rate": 0.0,
+        "miss_rate": 0.593
+      },
+      "detection_by_type": {
+        "genuine": {
+          "total": 11,
+          "flagged": 0,
+          "detection_rate": 0.0
+        },
+        "obvious_phishing": {
+          "total": 9,
+          "flagged": 9,
+          "detection_rate": 1.0
+        },
+        "sophisticated_phishing": {
+          "total": 18,
+          "flagged": 2,
+          "detection_rate": 0.111
+        }
+      },
+      "false_negatives": [
+        {
+          "id": "SC-SOPH01",
+          "name": "BEC: vendor banking-detail change",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH02",
+          "name": "Pretexting: IT system migration â†’ credential harvest",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH03",
+          "name": "Pretexting: industry peer benchmarking",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH07",
+          "name": "Spear-phishing: CFO impersonation requesting confidential financial info",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH09",
+          "name": "Pretexting: fake recruiter mining job and infrastructure details",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH10",
+          "name": "External auditor impersonation requesting financial records",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH11",
+          "name": "Long-term customer impersonation requesting contact / order changes",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH12",
+          "name": "Conference follow-up pretexting â€” false reconnect",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH13",
+          "name": "Healthcare vendor/insurer BEC â€” remittance redirect + PHI",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH14",
+          "name": "Research-collaboration pretext mining unpublished data",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH16",
+          "name": "Managed-IT vendor impersonation requesting remote access",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH17",
+          "name": "Law-firm legal-demand pretext for confidential records",
+          "type": "sophisticated_phishing",
+          "score": 0,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH04",
+          "name": "Pretexting: HR benefits enrollment â†’ PII harvest",
+          "type": "sophisticated_phishing",
+          "score": 1.5,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH05",
+          "name": "Pretexting: friendly colleague â†’ company directory + gift cards",
+          "type": "sophisticated_phishing",
+          "score": 1.5,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH18",
+          "name": "Fake-recruiter onboarding harvesting PII",
+          "type": "sophisticated_phishing",
+          "score": 1.5,
+          "reasoning": null
+        },
+        {
+          "id": "SC-SOPH15",
+          "name": "Payroll-diversion via employee impersonation",
+          "type": "sophisticated_phishing",
+          "score": 3.0,
+          "reasoning": null
+        }
+      ],
+      "false_positives": [],
+      "errors": []
+    },
+    "verdicts": [
+      {
+        "id": "SC-G01",
+        "name": "Legitimate internal IT system migration notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 2.0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "CREDENTIAL_SOLICITATION",
+            "points": 2.0,
+            "family": "phish",
+            "detail": "matched /verify your (identity|account|information)/"
+          }
+        ]
+      },
+      {
+        "id": "SC-G02",
+        "name": "Legitimate new account manager introduction from a real vendor",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G03",
+        "name": "Legitimate recruiter outreach",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 1.5,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bright now\\b/"
+          }
+        ]
+      },
+      {
+        "id": "SC-G04",
+        "name": "Genuine conference invitation follow-up",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G05",
+        "name": "Genuine retailer shipping notification",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G06",
+        "name": "Genuine internal request from manager",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV01",
+        "name": "Obvious lottery / prize winner scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 12.0,
+        "flagged": true,
+        "sub_type": "spam",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "LOOKALIKE_SENDER_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender domain 'google-promotions-intl.com' impersonates 'google'"
+          },
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bforfeit(ed|ure)?\\b/"
+          },
+          {
+            "name": "GIFT_CARD",
+            "points": 2.5,
+            "family": "spam",
+            "detail": "matched /gift card/"
+          },
+          {
+            "name": "LOTTERY_OR_REWARD",
+            "points": 2.5,
+            "family": "spam",
+            "detail": "matched /you('| ?ha)?ve won/"
+          },
+          {
+            "name": "PII_REQUEST",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /date of birth/"
+          },
+          {
+            "name": "GENERIC_GREETING",
+            "points": 1.0,
+            "family": "both",
+            "detail": "impersonal 'Dear Customer'-style greeting"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV02",
+        "name": "Obvious bank impersonation with spoofed domain",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 10.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "LOOKALIKE_SENDER_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender domain 'chasebank-online.com' impersonates 'chase'"
+          },
+          {
+            "name": "LOOKALIKE_URL_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "link host 'chase-secure-alerts.com' impersonates 'chase'"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bimmediately\\b/"
+          },
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bunauthorized (transaction|access|sign[- ]?in)\\b/"
+          },
+          {
+            "name": "EXCESSIVE_CAPS",
+            "points": 1.0,
+            "family": "spam",
+            "detail": "4 all-caps shouting tokens"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV03",
+        "name": "Obvious package delivery scam with redelivery fee",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 7.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "BRAND_DOMAIN_MISMATCH",
+            "points": 2.5,
+            "family": "phish",
+            "detail": "message invokes 'fedex' but is not from/linking ['fedex.com']"
+          },
+          {
+            "name": "LOOKALIKE_URL_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "link host 'fedex-redelivery.track-pkg.com' impersonates 'fedex'"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /within \\d+ ?(hours|hrs|business days)/"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV04",
+        "name": "Obvious Microsoft / Apple credential phish",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 12.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "LOOKALIKE_SENDER_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender domain 'micros0ft-account.com' impersonates 'microsoft'"
+          },
+          {
+            "name": "LOOKALIKE_URL_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "link host 'account-verify.micros0ft-secure.com' impersonates 'microsoft'"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bimmediately\\b/"
+          },
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\block(ed|ing)?\\b/"
+          },
+          {
+            "name": "CREDENTIAL_SOLICITATION",
+            "points": 2.0,
+            "family": "phish",
+            "detail": "matched /verify your (identity|account|information)/"
+          },
+          {
+            "name": "GENERIC_GREETING",
+            "points": 1.0,
+            "family": "both",
+            "detail": "impersonal 'Dear Customer'-style greeting"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV05",
+        "name": "Obvious IRS tax refund scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 13.5,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "LOOKALIKE_SENDER_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender domain 'irs-taxrefund-portal.com' impersonates 'irs'"
+          },
+          {
+            "name": "LOOKALIKE_URL_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "link host 'irs-refund-claim.taxportal-gov.com' impersonates 'irs'"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /within \\d+ ?(hours|hrs|business days)/"
+          },
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bforfeit(ed|ure)?\\b/"
+          },
+          {
+            "name": "CREDENTIAL_SOLICITATION",
+            "points": 2.0,
+            "family": "phish",
+            "detail": "matched /verify your (identity|account|information)/"
+          },
+          {
+            "name": "FINANCIAL_SOLICITATION",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /direct deposit/"
+          },
+          {
+            "name": "GENERIC_GREETING",
+            "points": 1.0,
+            "family": "both",
+            "detail": "impersonal 'Dear Customer'-style greeting"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV06",
+        "name": "Obvious tech support / 'your computer is infected' scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 5.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "BRAND_DOMAIN_MISMATCH",
+            "points": 2.5,
+            "family": "phish",
+            "detail": "message invokes 'microsoft' but is not from/linking ['live.com', 'microsoft.com', 'office.com', 'outlook.com']"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bimmediately\\b/"
+          },
+          {
+            "name": "EXCESSIVE_CAPS",
+            "points": 1.0,
+            "family": "spam",
+            "detail": "6 all-caps shouting tokens"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH01",
+        "name": "BEC: vendor banking-detail change",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH02",
+        "name": "Pretexting: IT system migration â†’ credential harvest",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH03",
+        "name": "Pretexting: industry peer benchmarking",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH04",
+        "name": "Pretexting: HR benefits enrollment â†’ PII harvest",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 1.5,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bright now\\b/"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH05",
+        "name": "Pretexting: friendly colleague â†’ company directory + gift cards",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 1.5,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\block(ed|ing)?\\b/"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH06",
+        "name": "Spear-phishing: CEO impersonation requesting an urgent wire",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 8.5,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "FREEMAIL_FROM_CORP_ROLE",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender gmail.com is freemail but message claims a corporate role/identity"
+          },
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bimmediately\\b/"
+          },
+          {
+            "name": "FINANCIAL_SOLICITATION",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /wire transfer/"
+          },
+          {
+            "name": "ADVANCE_FEE_FRAUD",
+            "points": 2.5,
+            "family": "spam",
+            "detail": "matched /\\bbeneficiary\\b/"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH07",
+        "name": "Spear-phishing: CFO impersonation requesting confidential financial info",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH08",
+        "name": "Sophisticated shared-document trap referencing a real colleague",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 8.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "LOOKALIKE_SENDER_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "sender domain 'google-docs-share.com' impersonates 'google'"
+          },
+          {
+            "name": "LOOKALIKE_URL_DOMAIN",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "link host 'docs.google-drive-sharing.com' impersonates 'google'"
+          },
+          {
+            "name": "CREDENTIAL_SOLICITATION",
+            "points": 2.0,
+            "family": "phish",
+            "detail": "matched /sign in with your/"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH09",
+        "name": "Pretexting: fake recruiter mining job and infrastructure details",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH10",
+        "name": "External auditor impersonation requesting financial records",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH11",
+        "name": "Long-term customer impersonation requesting contact / order changes",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH12",
+        "name": "Conference follow-up pretexting â€” false reconnect",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G07",
+        "name": "Genuine patient billing statement reminder",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G08",
+        "name": "Genuine financial-aid disbursement notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G09",
+        "name": "Genuine internal HR benefits/payroll notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 1.5,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "FINANCIAL_SOLICITATION",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /bank(ing)? details/"
+          }
+        ]
+      },
+      {
+        "id": "SC-G10",
+        "name": "Genuine SaaS subscription receipt",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 3.0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "ANCHOR_HREF_MISMATCH",
+            "points": 3.0,
+            "family": "phish",
+            "detail": "text refers to 'work.com' but the link points to 'loomwork.com'"
+          }
+        ]
+      },
+      {
+        "id": "SC-G11",
+        "name": "Genuine research-collaboration note from a known colleague",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV07",
+        "name": "Obvious crypto giveaway / doubling scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 6.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bends? (today|soon|tonight)\\b/"
+          },
+          {
+            "name": "CRYPTO_SCAM",
+            "points": 2.5,
+            "family": "phish",
+            "detail": "matched /\\bgiveaway\\b/"
+          },
+          {
+            "name": "LARGE_SUM",
+            "points": 1.0,
+            "family": "both",
+            "detail": "matched /\\b\\d[\\d,]*\\s?(eth|btc|bitcoin)\\b/"
+          },
+          {
+            "name": "EXCESSIVE_CAPS",
+            "points": 1.0,
+            "family": "spam",
+            "detail": "7 all-caps shouting tokens"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV08",
+        "name": "Obvious unclaimed-inheritance advance-fee scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 9.0,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\burgent(ly)?\\b/"
+          },
+          {
+            "name": "FINANCIAL_SOLICITATION",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /beneficiary/"
+          },
+          {
+            "name": "PII_REQUEST",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /full (legal )?name.*(address|date of birth)/"
+          },
+          {
+            "name": "ADVANCE_FEE_FRAUD",
+            "points": 2.5,
+            "family": "spam",
+            "detail": "matched /next of kin/"
+          },
+          {
+            "name": "LARGE_SUM",
+            "points": 1.0,
+            "family": "both",
+            "detail": "matched /\\busd\\s?\\d/"
+          },
+          {
+            "name": "GENERIC_GREETING",
+            "points": 1.0,
+            "family": "both",
+            "detail": "impersonal 'Dear Customer'-style greeting"
+          }
+        ]
+      },
+      {
+        "id": "SC-OBV09",
+        "name": "Obvious student-loan forgiveness scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 8.5,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /closes? in \\d+/"
+          },
+          {
+            "name": "THREAT_OR_SUSPENSION",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\block(ed|ing)?\\b/"
+          },
+          {
+            "name": "CREDENTIAL_SOLICITATION",
+            "points": 2.0,
+            "family": "phish",
+            "detail": "matched /confirm your (password|account|identity|details)/"
+          },
+          {
+            "name": "PII_REQUEST",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /\\bsocial security\\b/"
+          },
+          {
+            "name": "GENERIC_GREETING",
+            "points": 1.0,
+            "family": "both",
+            "detail": "impersonal 'Dear Customer'-style greeting"
+          },
+          {
+            "name": "EXCESSIVE_CAPS",
+            "points": 1.0,
+            "family": "spam",
+            "detail": "8 all-caps shouting tokens"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH13",
+        "name": "Healthcare vendor/insurer BEC â€” remittance redirect + PHI",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH14",
+        "name": "Research-collaboration pretext mining unpublished data",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH15",
+        "name": "Payroll-diversion via employee impersonation",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 3.0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bright now\\b/"
+          },
+          {
+            "name": "FINANCIAL_SOLICITATION",
+            "points": 1.5,
+            "family": "phish",
+            "detail": "matched /account number/"
+          }
+        ]
+      },
+      {
+        "id": "SC-SOPH16",
+        "name": "Managed-IT vendor impersonation requesting remote access",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH17",
+        "name": "Law-firm legal-demand pretext for confidential records",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH18",
+        "name": "Fake-recruiter onboarding harvesting PII",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 1.5,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": null,
+        "reasoning": null,
+        "indicators": [],
+        "error": null,
+        "rules": [
+          {
+            "name": "URGENCY",
+            "points": 1.5,
+            "family": "both",
+            "detail": "matched /\\bright now\\b/"
+          }
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "model": "claude-sonnet-4-6",
+    "analysis": {
+      "counts": {
+        "malicious_total": 27,
+        "genuine_total": 11,
+        "true_positive": 16,
+        "false_negative": 11,
+        "true_negative": 11,
+        "false_positive": 0,
+        "errored": 0
+      },
+      "metrics": {
+        "accuracy": 0.711,
+        "precision": 1.0,
+        "recall_detection_rate": 0.593,
+        "f1": 0.745,
+        "false_positive_rate": 0.0,
+        "miss_rate": 0.407
+      },
+      "detection_by_type": {
+        "genuine": {
+          "total": 11,
+          "flagged": 0,
+          "detection_rate": 0.0
+        },
+        "obvious_phishing": {
+          "total": 9,
+          "flagged": 9,
+          "detection_rate": 1.0
+        },
+        "sophisticated_phishing": {
+          "total": 18,
+          "flagged": 7,
+          "detection_rate": 0.389
+        }
+      },
+      "false_negatives": [
+        {
+          "id": "SC-SOPH13",
+          "name": "Healthcare vendor/insurer BEC â€” remittance redirect + PHI",
+          "type": "sophisticated_phishing",
+          "score": 0.62,
+          "reasoning": "The email reads as a routine business introduction from a clearinghouse account manager, mentioning specific healthcare EDI terminology (ERA/EFT, 835/837) consistent with the described role, with no requests for credentials, money, or sensitive data. However, the sender domain (meridian-clearinghouse-svcs.com) is a hyphenated, compound domain that could be a spoofed or lookalike domain for a real clearinghouse, which slightly reduces confidence."
+        },
+        {
+          "id": "SC-SOPH02",
+          "name": "Pretexting: IT system migration â†’ credential harvest",
+          "type": "sophisticated_phishing",
+          "score": 0.72,
+          "reasoning": "The email is a low-pressure informational notice with no requests for credentials, money, or any user action, and contains no suspicious links or urgency tactics. The only mild concern is that the sender domain (corp-techservices.com) is a generic-sounding external domain that may not match the recipient's organization, but the message content itself is entirely benign."
+        },
+        {
+          "id": "SC-SOPH04",
+          "name": "Pretexting: HR benefits enrollment â†’ PII harvest",
+          "type": "sophisticated_phishing",
+          "score": 0.72,
+          "reasoning": "This email is a routine HR benefits enrollment reminder with no urgent calls to action, no links, no requests for credentials or sensitive data, and no threatening language. The sender domain (hrconnect-solutions.com) is consistent with the claimed identity of HRConnect Solutions, and the message simply notifies employees of upcoming enrollment dates."
+        },
+        {
+          "id": "SC-SOPH01",
+          "name": "BEC: vendor banking-detail change",
+          "type": "sophisticated_phishing",
+          "score": 0.82,
+          "reasoning": "This email reads as a standard business introduction from a new account manager, with consistent sender domain, no requests for credentials or payment, and no urgency or threatening language. The only minor note is encoding artifacts in the subject and body, but these are likely a character encoding issue rather than a deceptive tactic."
+        },
+        {
+          "id": "SC-SOPH09",
+          "name": "Pretexting: fake recruiter mining job and infrastructure details",
+          "type": "sophisticated_phishing",
+          "score": 0.82,
+          "reasoning": "This reads as a standard unsolicited recruiter outreach email with no requests for credentials, PII, or money, no suspicious links, and a plausible sender domain matching the claimed identity. While unsolicited, it lacks the hallmarks of phishing or bulk spam."
+        },
+        {
+          "id": "SC-SOPH10",
+          "name": "External auditor impersonation requesting financial records",
+          "type": "sophisticated_phishing",
+          "score": 0.82,
+          "reasoning": "This email reads as a plausible professional outreach from an external auditor during a planning phase, with no requests for credentials, money, or sensitive data — only a request to confirm the correct contact person. The sender domain, name, and message content are internally consistent and the tone is appropriate for audit correspondence."
+        },
+        {
+          "id": "SC-SOPH14",
+          "name": "Research-collaboration pretext mining unpublished data",
+          "type": "sophisticated_phishing",
+          "score": 0.82,
+          "reasoning": "This email reads as a genuine academic outreach message — it references specific prior work, proposes a research collaboration and special issue, makes no requests for credentials or money, and applies no urgency or threats. The domain 'global-research-consortium.org' is not a well-known institution but the message content and tone are consistent with legitimate cold academic contact."
+        },
+        {
+          "id": "SC-SOPH05",
+          "name": "Pretexting: friendly colleague â†’ company directory + gift cards",
+          "type": "sophisticated_phishing",
+          "score": 0.9,
+          "reasoning": "This email is a straightforward internal coordination inquiry about a team offsite booking with no suspicious links, credential requests, urgency tactics, or spoofed domains. The sender domain 'company-corp.com' is consistent with a plausible corporate address and the request is entirely benign."
+        },
+        {
+          "id": "SC-SOPH03",
+          "name": "Pretexting: industry peer benchmarking",
+          "type": "sophisticated_phishing",
+          "score": 0.92,
+          "reasoning": "This email reads as a genuine professional outreach from someone who attended a conference, referencing specific details (the Midwest Supply Chain Forum, a panel on vendor consolidation) and making a low-pressure request for an informal conversation. There are no requests for credentials, money, or sensitive data, no suspicious links, and the sender's domain is consistent with the claimed identity."
+        },
+        {
+          "id": "SC-SOPH11",
+          "name": "Long-term customer impersonation requesting contact / order changes",
+          "type": "sophisticated_phishing",
+          "score": 0.93,
+          "reasoning": "This email reads as a routine B2B supply-chain follow-up about a specific purchase order, with no requests for credentials, money, or sensitive personal data. The sender domain is consistent with the claimed company, the tone is professional and contextually plausible, and there are no suspicious links or urgency tactics."
+        },
+        {
+          "id": "SC-SOPH12",
+          "name": "Conference follow-up pretexting â€” false reconnect",
+          "type": "sophisticated_phishing",
+          "score": 0.93,
+          "reasoning": "This email is a friendly follow-up from someone who met the recipient at a conference, referencing specific shared details (closing reception, Friday departure, a panel discussion) that indicate a genuine prior interaction. There are no suspicious links, requests for credentials or money, urgency cues, or other phishing indicators."
+        }
+      ],
+      "false_positives": [],
+      "errors": []
+    },
+    "verdicts": [
+      {
+        "id": "SC-G01",
+        "name": "Legitimate internal IT system migration notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.95,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.95,
+        "reasoning": "This email is an internal IT notification about a planned Okta tenant consolidation, with no links, no credential requests, and an explicit warning to distrust any follow-up verification emails — consistent with a genuine security-conscious IT communication. The tone, references to internal tools (Confluence, Slack), and the proactive phishing warning all point to a legitimate message.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G02",
+        "name": "Legitimate new account manager introduction from a real vendor",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.92,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.92,
+        "reasoning": "This reads as a routine business account-transition notification with no requests for credentials, money, or sensitive data, and no suspicious links or urgency tactics. The sender domain matches the company name, the message references specific existing details (PO number, shipping schedule), and the tone is professional and informational.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G03",
+        "name": "Legitimate recruiter outreach",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.82,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.82,
+        "reasoning": "This appears to be a standard recruiter outreach email with consistent branding (sender domain matches company website), specific and plausible role details, and a low-pressure tone. The links reference the company domain and a Calendly scheduling page, with no requests for credentials, personal data, or urgent action.",
+        "indicators": [
+          "Unsolicited outreach from an unknown recruiter",
+          "Calendly link cannot be fully verified as belonging to the sender",
+          "Encoding artifacts (â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G04",
+        "name": "Genuine conference invitation follow-up",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.93,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.93,
+        "reasoning": "This is a plausible, personalized professional invitation to speak at an industry conference, with specific details about the event, panel topic, and compensation that are consistent with genuine outreach. There are no suspicious links, credential requests, urgency tactics, or other red flags.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G05",
+        "name": "Genuine retailer shipping notification",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.93,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.93,
+        "reasoning": "This appears to be a standard transactional shipping confirmation email with specific order details, a real USPS tracking number format, and links pointing to the legitimate USPS tracking tool and a consistent aldinebooks.com domain. There are no requests for credentials, payment, or sensitive information, and no urgency/threat language.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G06",
+        "name": "Genuine internal request from manager",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.95,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.95,
+        "reasoning": "This is a straightforward internal check-in from a manager to a direct report, with no suspicious links, credential requests, urgency tactics, or unusual asks. The tone and content are consistent with routine workplace communication.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV01",
+        "name": "Obvious lottery / prize winner scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.98,
+        "flagged": true,
+        "sub_type": "spam",
+        "confidence": 0.98,
+        "reasoning": "This is a classic advance-fee/lottery scam: it claims the recipient won a large cash prize via a random email selection, requests extensive PII, and demands a gift card 'processing fee' to release winnings — none of which is consistent with any legitimate Google promotion. The sender domain 'google-promotions-intl.com' is not affiliated with Google.",
+        "indicators": [
+          "Spoofed/lookalike domain 'google-promotions-intl.com' impersonating Google",
+          "Unsolicited lottery win notification with no prior participation",
+          "Requests sensitive PII (full name, address, DOB, phone, occupation)",
+          "Demands a $150 gift card payment as a 'processing fee' — classic advance-fee fraud",
+          "Generic greeting 'Dear Lucky Winner'",
+          "Artificial urgency: 7-day deadline or prize forfeited",
+          "Implausibly large prize ($450,000) awarded via random email selection",
+          "Fake reference code and invented job title to appear official"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV02",
+        "name": "Obvious bank impersonation with spoofed domain",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "The sender domain 'chasebank-online.com' is not Chase's legitimate domain (chase.com), and the dispute link points to 'chase-secure-alerts.com', another lookalike domain unaffiliated with Chase. The message uses classic phishing tactics including urgency ('within 12 hours'), a fabricated suspicious transaction, and a redacted phone number to pressure victims into clicking a fraudulent link.",
+        "indicators": [
+          "Sender domain 'chasebank-online.com' spoofs Chase but is not the legitimate chase.com",
+          "Dispute link goes to 'chase-secure-alerts.com', a lookalike domain unrelated to Chase",
+          "Artificial 12-hour deadline to create urgency",
+          "Redacted/placeholder phone number '1-800-XXX-XXXX' typical of phishing templates",
+          "Generic greeting 'Dear Chase Customer' rather than the recipient's actual name",
+          "Foreign transaction detail (Lagos, NG) used as a fear trigger"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV03",
+        "name": "Obvious package delivery scam with redelivery fee",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.98,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.98,
+        "reasoning": "The sender domain 'fed-ex-delivery.com' is not an official FedEx domain, and the redelivery link points to 'fedex-redelivery.track-pkg.com' — a lookalike domain unrelated to fedex.com. The request for a small fee combined with fake urgency and spoofed branding is a classic parcel delivery phishing tactic.",
+        "indicators": [
+          "Sender domain 'fed-ex-delivery.com' is not the official fedex.com",
+          "Redelivery link uses a lookalike domain 'track-pkg.com' rather than fedex.com",
+          "Request for payment of $2.99 redelivery fee — common credential/payment harvesting lure",
+          "Urgency tactic: 5-day deadline before package is returned",
+          "Encoding artifact in subject line ('â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV04",
+        "name": "Obvious Microsoft / Apple credential phish",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "The sender domain 'micros0ft-account.com' and the link domain 'micros0ft-secure.com' both use a zero ('0') substituted for the letter 'o' to spoof Microsoft, which is a classic lookalike domain technique. Combined with urgency tactics (24-hour lockout threat), a vague 'Dear Customer' greeting, and a suspicious third-party verification URL, this is a clear phishing attempt.",
+        "indicators": [
+          "Spoofed sender domain using '0' instead of 'o': micros0ft-account.com",
+          "Lookalike link domain: account-verify.micros0ft-secure.com",
+          "Generic greeting 'Dear Customer' instead of the recipient's name",
+          "Artificial urgency: 24-hour account lockout threat",
+          "Unrecognized geographic location (Moscow, Russia) used to induce panic",
+          "Verification URL does not point to any official microsoft.com domain"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV05",
+        "name": "Obvious IRS tax refund scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "This email impersonates the IRS using a spoofed domain (irs-taxrefund-portal.com) and directs the recipient to a fraudulent lookalike URL (taxportal-gov.com) to harvest banking and personal information, which is a classic credential/data phishing attack. The IRS never initiates contact via email to request banking details or personal verification through a web portal.",
+        "indicators": [
+          "Sender domain 'irs-taxrefund-portal.com' is not the official IRS domain (irs.gov)",
+          "Link destination 'irs-refund-claim.taxportal-gov.com' is a lookalike domain, not irs.gov",
+          "Request to submit direct deposit/banking information via an external portal",
+          "Artificial urgency: 10-day deadline with threat of refund forfeiture",
+          "Generic greeting 'Dear Taxpayer' instead of addressing recipient by name",
+          "Fabricated Case ID to add false legitimacy",
+          "The IRS does not initiate contact by email regarding refunds or banking updates"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV06",
+        "name": "Obvious tech support / 'your computer is infected' scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "This is a classic tech-support scam impersonating Microsoft Defender, sent from a non-Microsoft domain (defender-secure-support.com), using fabricated threat names, urgent language, and a phone number to trick victims into calling fraudsters who will steal money or credentials.",
+        "indicators": [
+          "Sender domain 'defender-secure-support.com' is not affiliated with Microsoft",
+          "Urgent scare tactics listing fake malware detections to pressure the recipient",
+          "Request to call a third-party phone number rather than directing to official Microsoft support",
+          "Artificial 24-hour deadline threatening permanent file encryption",
+          "Fake 'Case ID' to add false legitimacy",
+          "Contradictory disclaimer ('Microsoft will never ask for your password') used to appear trustworthy while still running a scam"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH01",
+        "name": "BEC: vendor banking-detail change",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.82,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.82,
+        "reasoning": "This email reads as a standard business introduction from a new account manager, with consistent sender domain, no requests for credentials or payment, and no urgency or threatening language. The only minor note is encoding artifacts in the subject and body, but these are likely a character encoding issue rather than a deceptive tactic.",
+        "indicators": [
+          "Minor character encoding artifacts (â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH02",
+        "name": "Pretexting: IT system migration â†’ credential harvest",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.72,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.72,
+        "reasoning": "The email is a low-pressure informational notice with no requests for credentials, money, or any user action, and contains no suspicious links or urgency tactics. The only mild concern is that the sender domain (corp-techservices.com) is a generic-sounding external domain that may not match the recipient's organization, but the message content itself is entirely benign.",
+        "indicators": [
+          "Sender domain 'corp-techservices.com' is a generic external domain that may not match the recipient's actual corporate IT domain",
+          "Encoding artifact in subject line ('â€",
+          " instead of an em dash) suggests possible copy-paste or character encoding issue"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH03",
+        "name": "Pretexting: industry peer benchmarking",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.92,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.92,
+        "reasoning": "This email reads as a genuine professional outreach from someone who attended a conference, referencing specific details (the Midwest Supply Chain Forum, a panel on vendor consolidation) and making a low-pressure request for an informal conversation. There are no requests for credentials, money, or sensitive data, no suspicious links, and the sender's domain is consistent with the claimed identity.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH04",
+        "name": "Pretexting: HR benefits enrollment â†’ PII harvest",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.72,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.72,
+        "reasoning": "This email is a routine HR benefits enrollment reminder with no urgent calls to action, no links, no requests for credentials or sensitive data, and no threatening language. The sender domain (hrconnect-solutions.com) is consistent with the claimed identity of HRConnect Solutions, and the message simply notifies employees of upcoming enrollment dates.",
+        "indicators": [
+          "Sender domain hrconnect-solutions.com cannot be independently verified as the recipient's actual HR provider",
+          "Encoding artifact in subject line ('â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH05",
+        "name": "Pretexting: friendly colleague â†’ company directory + gift cards",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.9,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.9,
+        "reasoning": "This email is a straightforward internal coordination inquiry about a team offsite booking with no suspicious links, credential requests, urgency tactics, or spoofed domains. The sender domain 'company-corp.com' is consistent with a plausible corporate address and the request is entirely benign.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH06",
+        "name": "Spear-phishing: CEO impersonation requesting an urgent wire",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.97,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.97,
+        "reasoning": "This is a classic Business Email Compromise (BEC) / CEO fraud attempt: a purported executive ('David Chen, CEO') is sending from a personal Gmail account rather than a corporate domain, creating artificial urgency, claiming to be unavailable (in a meeting), and requesting an immediate large wire transfer to an unknown vendor with full banking details provided. These are textbook hallmarks of BEC fraud.",
+        "indicators": [
+          "Sender uses a personal Gmail address (david.chen.priv@gmail.com) instead of a corporate Meridian Manufacturing domain",
+          "High-urgency language: 'Urgent', 'before end of day', 'process immediately'",
+          "CEO claiming to be unavailable to speak, preventing verbal verification",
+          "Large wire transfer ($38,500) to an unknown overseas vendor",
+          "Full bank account and routing details pre-supplied to streamline fraudulent transfer",
+          "Vague promise to 'explain details later' to discourage questions",
+          "Generic 'Sent from my iPhone' footer used to excuse brevity and lack of verification"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH07",
+        "name": "Spear-phishing: CFO impersonation requesting confidential financial info",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.87,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.87,
+        "reasoning": "This email exhibits classic business email compromise (BEC) hallmarks: a plausible authority figure (Rebecca) using an off-channel personal email (protonmail), a compelling out-of-office pretext (daughter's recital, laptop left at work), urgency (board call tomorrow), and a request to exfiltrate sensitive internal financial documents (Q1 P&L, revenue-by-segment data) to an unverified external address.",
+        "indicators": [
+          "Sender uses a personal ProtonMail address rather than a corporate email, claiming to be a finance executive",
+          "Off-channel communication justified by a sympathetic personal excuse (daughter's recital, forgot laptop)",
+          "Urgent deadline (board call first thing tomorrow) designed to pressure quick action without verification",
+          "Requests sensitive, confidential internal financial data (Q1 close summary, P&L slide, revenue-by-segment) be sent externally",
+          "Specific internal details (Marcus, Q1 close, last Thursday) included to add credibility — typical of BEC reconnaissance",
+          "'Sent from my phone' footer used to excuse informal channel and deter scrutiny"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH08",
+        "name": "Sophisticated shared-document trap referencing a real colleague",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.95,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.95,
+        "reasoning": "The sender domain 'google-docs-share.com' and the link domain 'google-drive-sharing.com' are both lookalike domains impersonating Google, not legitimate Google infrastructure (which uses google.com). This is a classic phishing technique designed to harvest Google account credentials when the victim 'signs in' to view the document.",
+        "indicators": [
+          "Sender domain 'google-docs-share.com' is not an official Google domain",
+          "Link destination 'google-drive-sharing.com' is a lookalike/spoofed domain, not docs.google.com",
+          "Prompt to sign in with Google account credentials to view the document — credential harvesting vector",
+          "Fabricated urgency around a 'CONFIDENTIAL' budget document and upcoming meeting to entice the recipient to click"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH09",
+        "name": "Pretexting: fake recruiter mining job and infrastructure details",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.82,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.82,
+        "reasoning": "This reads as a standard unsolicited recruiter outreach email with no requests for credentials, PII, or money, no suspicious links, and a plausible sender domain matching the claimed identity. While unsolicited, it lacks the hallmarks of phishing or bulk spam.",
+        "indicators": [
+          "Unsolicited cold outreach from an unverified recruiter",
+          "Vague 'stealth-mode' framing that avoids specifics",
+          "High compensation figure used as a lure"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH10",
+        "name": "External auditor impersonation requesting financial records",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.82,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.82,
+        "reasoning": "This email reads as a plausible professional outreach from an external auditor during a planning phase, with no requests for credentials, money, or sensitive data — only a request to confirm the correct contact person. The sender domain, name, and message content are internally consistent and the tone is appropriate for audit correspondence.",
+        "indicators": [
+          "Sender domain 'bridgewater-audit-svcs.com' uses a hyphenated subdomain-style name that could be a lookalike for a legitimate firm",
+          "Subject line contains garbled characters (â€",
+          " which may indicate encoding issues or spoofed metadata"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH11",
+        "name": "Long-term customer impersonation requesting contact / order changes",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.93,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.93,
+        "reasoning": "This email reads as a routine B2B supply-chain follow-up about a specific purchase order, with no requests for credentials, money, or sensitive personal data. The sender domain is consistent with the claimed company, the tone is professional and contextually plausible, and there are no suspicious links or urgency tactics.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH12",
+        "name": "Conference follow-up pretexting â€” false reconnect",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.93,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.93,
+        "reasoning": "This email is a friendly follow-up from someone who met the recipient at a conference, referencing specific shared details (closing reception, Friday departure, a panel discussion) that indicate a genuine prior interaction. There are no suspicious links, requests for credentials or money, urgency cues, or other phishing indicators.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G07",
+        "name": "Genuine patient billing statement reminder",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.85,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.85,
+        "reasoning": "This email follows the standard format of a healthcare billing notification, uses a consistent domain for both the sender address and the portal link, masks sensitive account details, and does not pressure the recipient or ask for credentials directly in the email.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G08",
+        "name": "Genuine financial-aid disbursement notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.93,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.93,
+        "reasoning": "The email comes from a plausible institutional domain (northwind.edu), references a specific student by name, provides a named campus location, links only to the matching institutional portal (my.northwind.edu), and explicitly states that banking changes are never made by email — an anti-phishing posture inconsistent with a phishing attempt.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G09",
+        "name": "Genuine internal HR benefits/payroll notice",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.97,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.97,
+        "reasoning": "This email reads as a routine internal HR benefits reminder with no suspicious links, no requests for credentials or sensitive data, and explicitly directs the recipient to use the official Workday portal rather than email for any sensitive information. The tone, content, and structure are consistent with legitimate corporate HR communications.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G10",
+        "name": "Genuine SaaS subscription receipt",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.92,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.92,
+        "reasoning": "This appears to be a standard transactional receipt email from Loomwork, containing specific subscription details (plan, amount, card last four digits, invoice number, date) consistent with a genuine billing notification. The sender domain matches the brand, links point to the same domain, and there are no requests for credentials, urgency tactics, or suspicious redirects.",
+        "indicators": [
+          "Minor encoding artifact (â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-G11",
+        "name": "Genuine research-collaboration note from a known colleague",
+        "scenario_type": "genuine",
+        "truth_label": 0,
+        "score": 0.97,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.97,
+        "reasoning": "This email is a routine academic collaboration message between colleagues discussing paper revisions and a conference presentation, with no suspicious links, credential requests, or urgency tactics. The sender's address matches the institutional affiliation claimed in the signature.",
+        "indicators": [],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV07",
+        "name": "Obvious crypto giveaway / doubling scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "This is a classic cryptocurrency doubling scam: it impersonates the Ethereum Foundation using a lookalike domain (eth-foundation-giveaway.net) and promises to double any ETH sent to a wallet address, which is a well-known fraud pattern designed to steal cryptocurrency. The sender domain has no affiliation with the real Ethereum Foundation (ethereum.org), and the 'send crypto to receive double back' scheme is a textbook crypto phishing/scam technique.",
+        "indicators": [
+          "Lookalike/spoofed domain 'eth-foundation-giveaway.net' impersonating the Ethereum Foundation",
+          "Classic cryptocurrency doubling scam (send X ETH, receive 2X back)",
+          "Fake urgency: 'ENDS TODAY', 'pool closes when it's empty'",
+          "Suspicious claim page URL on the same fraudulent domain",
+          "Unverified wallet address used to collect victim funds",
+          "Fabricated social proof ('3,800 community members have already participated')"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV08",
+        "name": "Obvious unclaimed-inheritance advance-fee scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.97,
+        "flagged": true,
+        "sub_type": "spam",
+        "confidence": 0.97,
+        "reasoning": "This is a classic advance-fee fraud (419 scam) posing as a legal inheritance notice, using fabricated urgency, a vague claim of shared surname, and a large sum of money to lure the recipient into providing personal information and eventually money. It exhibits all hallmark indicators of unsolicited scam mail rather than a targeted credential-phishing attack.",
+        "indicators": [
+          "Generic greeting 'Dear Beneficiary' with no specific name",
+          "Unsolicited claim of a large inheritance (USD 8.4 million) from an unknown deceased client",
+          "Vague connection to recipient based solely on shared surname",
+          "Urgent pressure tactic: funds will be 'declared unclaimed by the authorities'",
+          "Request for personal information (full name, address, phone number) from a cold email",
+          "Self-created domain 'aldous-legal-chambers.org' with no verifiable third-party presence",
+          "Classic advance-fee fraud (419 scam) narrative structure"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-OBV09",
+        "name": "Obvious student-loan forgiveness scam",
+        "scenario_type": "obvious_phishing",
+        "truth_label": 1,
+        "score": 0.99,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.99,
+        "reasoning": "This email is a classic phishing/scam attempt: it uses a lookalike domain (studentaid-relief-program.com) impersonating the U.S. Department of Education's official studentaid.gov, creates artificial urgency with a 72-hour deadline, requests highly sensitive PII (SSN and FSA ID), and demands an $89 'processing fee' — which is not a feature of any legitimate federal student loan forgiveness program.",
+        "indicators": [
+          "Sender domain 'studentaid-relief-program.com' is not an official government (.gov) domain",
+          "Requests Social Security number and FSA ID credentials via a non-government website",
+          "Charges an $89 'enrollment processing fee' — legitimate federal programs never charge fees",
+          "Artificial 72-hour deadline to create urgency and pressure action",
+          "Vague claim that 'our records indicate you may qualify' with no specific account information",
+          "All-caps urgency language ('FINAL NOTICE', 'ACTION REQUIRED', 'INCOMPLETE')",
+          "No verifiable contact information or official agency branding beyond a fabricated program reference number"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH13",
+        "name": "Healthcare vendor/insurer BEC â€” remittance redirect + PHI",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.62,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.62,
+        "reasoning": "The email reads as a routine business introduction from a clearinghouse account manager, mentioning specific healthcare EDI terminology (ERA/EFT, 835/837) consistent with the described role, with no requests for credentials, money, or sensitive data. However, the sender domain (meridian-clearinghouse-svcs.com) is a hyphenated, compound domain that could be a spoofed or lookalike domain for a real clearinghouse, which slightly reduces confidence.",
+        "indicators": [
+          "Sender domain 'meridian-clearinghouse-svcs.com' is a hyphenated compound domain that could be a lookalike or newly registered domain",
+          "Encoding artifacts in the email body (â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH14",
+        "name": "Research-collaboration pretext mining unpublished data",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.82,
+        "flagged": false,
+        "sub_type": "legitimate",
+        "confidence": 0.82,
+        "reasoning": "This email reads as a genuine academic outreach message — it references specific prior work, proposes a research collaboration and special issue, makes no requests for credentials or money, and applies no urgency or threats. The domain 'global-research-consortium.org' is not a well-known institution but the message content and tone are consistent with legitimate cold academic contact.",
+        "indicators": [
+          "Sender domain 'global-research-consortium.org' is not a recognized major institution and could be fabricated",
+          "Generic/unverifiable reference to 'your paper on the normalization approach' without a title or citation",
+          "Mild encoding artifact in subject line (â€"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH15",
+        "name": "Payroll-diversion via employee impersonation",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.91,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.91,
+        "reasoning": "This email exhibits the classic 'direct deposit redirect' social engineering attack: the sender uses a personal Gmail account claiming inability to access work systems, creates urgency around a payroll deadline, and attempts to get payroll staff to process a bank account change outside of normal secure channels. This is a well-documented pattern used to fraudulently redirect employee paychecks.",
+        "indicators": [
+          "Sender uses a personal Gmail address (jasonpratt.payroll@gmail.com) rather than a corporate email to conduct a sensitive payroll/HR request",
+          "Claims inability to access work email or the HR portal — a common pretext to bypass secure verification processes",
+          "Urgency created by mentioning the next payroll run and a 'now-closed' old account to pressure quick action",
+          "Requests to send sensitive banking information (routing and account numbers) outside of the official secure portal",
+          "'@gmail.com' domain with 'payroll' in the address is suspicious and possibly designed to appear authoritative"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH16",
+        "name": "Managed-IT vendor impersonation requesting remote access",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.72,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.72,
+        "reasoning": "This email exhibits a classic phishing setup: it claims to be from an MSP performing an emergency patch, references a vague embargoed vulnerability to create urgency without providing verifiable details, and primes the recipient to expect a future 'verification step' — a common social engineering technique to harvest credentials or account info. The sender domain (northbridge-msp-support.com) uses a support-subdomain pattern often associated with spoofed or lookalike domains rather than an official company domain.",
+        "indicators": [
+          "Sender domain 'northbridge-msp-support.com' is a hyphenated support-style domain that could be a lookalike/spoofed domain",
+          "Vague reference to a 'critical endpoint vulnerability' under embargo — no verifiable details provided",
+          "Pre-announcement of a future 'verification step' for accounts/machines — classic credential-harvesting setup",
+          "Urgency framing ('emergency rollout', 'this week') without actionable verification",
+          "No action requested now but primes recipient to comply with a follow-up request"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH17",
+        "name": "Law-firm legal-demand pretext for confidential records",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.78,
+        "flagged": true,
+        "sub_type": "phishing",
+        "confidence": 0.78,
+        "reasoning": "This email uses classic social engineering tactics: it creates urgency around a legal 'preservation obligation,' instructs the recipient to keep it secret from colleagues ('not circulated internally'), and requests confirmation of identity/role — all without any verifiable case details or formal documentation. The instruction to handle the matter 'discreetly' is a hallmark of business email compromise and phishing attempts designed to isolate the target.",
+        "indicators": [
+          "Instructs recipient to keep matter secret from colleagues ('not circulated internally beyond those with a need to know')",
+          "Requests confirmation of recipient's role and identity before providing any verifiable details",
+          "Vague legal threat ('preservation obligation has attached') with no supporting documentation or specific case details",
+          "Urgency framing ('expedited basis,' 'required timeframe') designed to pressure quick action",
+          "No verifiable firm website, bar association reference, or other legitimizing details provided",
+          "Sender domain 'whitlock-graves-legal.com' is not a well-known law firm domain and may be a lookalike"
+        ],
+        "error": null,
+        "rules": []
+      },
+      {
+        "id": "SC-SOPH18",
+        "name": "Fake-recruiter onboarding harvesting PII",
+        "scenario_type": "sophisticated_phishing",
+        "truth_label": 1,
+        "score": 0.82,
+        "flagged": true,
+        "sub_type": "spam",
+        "confidence": 0.82,
+        "reasoning": "This is an unsolicited recruitment email with vague job details, unrealistic promises of a fast hiring process ('onboarded within a few days'), and a request for personal contact information (phone number), all classic hallmarks of job-scam spam. There is no verifiable company presence indicated, the domain 'brightpath-talenthub.com' appears generic and unverifiable, and the message uses high-pressure appeal with little concrete information about the role.",
+        "indicators": [
+          "Unsolicited outreach with no prior contact or context",
+          "Vague job description with no company or role specifics",
+          "Unusually fast onboarding promise ('within a few days')",
+          "Request for personal phone number in reply",
+          "Generic, unverifiable recruiter domain (brightpath-talenthub.com)",
+          "Suspiciously broad pay range with no role details"
+        ],
+        "error": null,
+        "rules": []
+      }
+    ]
+  }
+}

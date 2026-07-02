@@ -1,0 +1,5 @@
+anthropic>=0.40.0
+
+# Only needed for plot_confusion_matrices.py (visualizing filter_results.json).
+# The generation, annotation, and traditional_filter scripts do not require it.
+matplotlib>=3.5

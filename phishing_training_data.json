@@ -1,0 +1,244 @@
+{
+  "metadata": {
+    "description": "Synthetic phishing email training data for ML classifier development",
+    "label_key": "label",
+    "label_values": {
+      "1": "phishing"
+    },
+    "phishing_tactic_categories": [
+      "credential_harvesting",
+      "account_suspension",
+      "financial_impersonation",
+      "package_delivery",
+      "business_email_compromise",
+      "prize_lottery",
+      "government_impersonation",
+      "shared_document",
+      "security_alert",
+      "invoice_fraud"
+    ],
+    "feature_notes": "Each email is annotated with persuasion tactics (urgency, authority, fear, reward, curiosity, scarcity) and structural indicators (spoofed_sender, suspicious_url, generic_greeting, grammar_errors, requests_credentials, requests_financial_info, threatening_tone, embedded_link, attachment_reference) for supervised learning."
+  },
+  "emails": [
+    {
+      "id": 1,
+      "label": 1,
+      "category": "credential_harvesting",
+      "from": "security-noreply@micros0ft-account.com",
+      "reply_to": "support@micros0ft-account.com",
+      "to": "user@example.com",
+      "subject": "Action Required: Unusual Sign-In Activity on Your Account",
+      "body": "Dear Customer,\n\nWe detected an unusual sign-in attempt on your Microsoft account from an unrecognized device in Moscow, Russia on April 12, 2026 at 3:42 AM.\n\nIf this wasn't you, your account may be compromised. Please verify your identity immediately by clicking the secure link below:\n\nhttps://account-verify.micros0ft-secure.com/auth/login\n\nIf you do not verify within 24 hours, your account will be temporarily locked for your protection.\n\nThank you,\nMicrosoft Account Security Team\n\nThis is an automated message. Please do not reply directly to this email.",
+      "persuasion_tactics": ["urgency", "fear", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": false,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 2,
+      "label": 1,
+      "category": "account_suspension",
+      "from": "no-reply@paypa1-service.com",
+      "reply_to": "resolution@paypa1-service.com",
+      "to": "user@example.com",
+      "subject": "Your PayPal Account Has Been Limited – Immediate Action Needed",
+      "body": "Dear Valued PayPal User,\n\nWe've noticed some irregularities with your recent transactions. As a result, we have placed a temporary limitation on your account.\n\nYou will not be able to send or receive payments until you confirm your information.\n\nTo restore full access, please update your account details here:\n\nhttps://www.paypa1-resolve.com/account/update\n\nPlease complete this step within 48 hours to avoid permanent suspension of your account.\n\nSincerely,\nPayPal Resolution Center\nRef: PP-009-481-227",
+      "persuasion_tactics": ["urgency", "fear", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": true,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 3,
+      "label": 1,
+      "category": "financial_impersonation",
+      "from": "alerts@chasebank-online.com",
+      "reply_to": "customercare@chasebank-online.com",
+      "to": "user@example.com",
+      "subject": "Fraud Alert: Unauthorized Transaction on Your Chase Account",
+      "body": "Dear Chase Customer,\n\nWe have identified a suspicious transaction on your Chase debit card ending in **4892**:\n\n  Amount: $1,247.89\n  Merchant: ELECTRONICS INTL - LAGOS, NG\n  Date: April 13, 2026\n\nIf you did not authorize this transaction, you must report it immediately to prevent further charges.\n\nClick here to dispute this transaction:\nhttps://chase-secure-alerts.com/fraud/dispute?ref=TX8847123\n\nIf you do not respond within 12 hours, we will assume the transaction was authorized.\n\nChase Fraud Protection Department\n1-800-XXX-XXXX",
+      "persuasion_tactics": ["urgency", "fear", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": true,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 4,
+      "label": 1,
+      "category": "package_delivery",
+      "from": "tracking@fed-ex-delivery.com",
+      "reply_to": "noreply@fed-ex-delivery.com",
+      "to": "user@example.com",
+      "subject": "FedEx: Delivery Failed – Package Requires Address Confirmation",
+      "body": "Hello,\n\nWe attempted to deliver your package (Tracking #: 7892-4410-3387) today but were unable to complete delivery due to an incomplete address on file.\n\nTo reschedule delivery, please confirm your shipping details and pay the redelivery fee of $2.99:\n\nhttps://fedex-redelivery.track-pkg.com/confirm\n\nIf we do not hear from you within 5 business days, the package will be returned to the sender.\n\nThank you for choosing FedEx.\n\nFedEx Customer Support\nTracking ID: FX-20260414-8837",
+      "persuasion_tactics": ["urgency", "curiosity"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": false,
+        "requests_financial_info": true,
+        "threatening_tone": false,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 5,
+      "label": 1,
+      "category": "business_email_compromise",
+      "from": "david.chen@compaany-corp.com",
+      "reply_to": "david.chen.private@gmail.com",
+      "to": "sarah.williams@example.com",
+      "subject": "Urgent: Wire Transfer Needed Before End of Day",
+      "body": "Hi Sarah,\n\nI'm currently in a meeting and can't talk right now, but I need you to process a wire transfer urgently. We need to pay an overseas vendor before their bank closes today.\n\nAmount: $38,500.00\nBeneficiary: Nexgen Supplies Ltd.\nBank: First Continental Bank\nAccount: 2891-00447-3321\nRouting: 091000019\nReference: INV-2026-0414\n\nPlease process this immediately and confirm once done. I'll explain the details when I'm out of this meeting.\n\nThanks,\nDavid Chen\nCEO, Company Corp\n\nSent from my iPhone",
+      "persuasion_tactics": ["urgency", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": false,
+        "generic_greeting": false,
+        "grammar_errors": false,
+        "requests_credentials": false,
+        "requests_financial_info": true,
+        "threatening_tone": false,
+        "embedded_link": false,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 6,
+      "label": 1,
+      "category": "prize_lottery",
+      "from": "winner-notification@google-promotions-intl.com",
+      "reply_to": "claims.dept@google-promotions-intl.com",
+      "to": "user@example.com",
+      "subject": "Congratulations! You've Been Selected as a Google Annual Prize Winner!",
+      "body": "Dear Lucky Winner,\n\nWe are pleased to inform you that your email address was randomly selected in the Google Annual E-mail Promotion held on April 10th, 2026. You have won a cash prize of $450,000.00 USD!\n\nTo claim your prize, please reply with the following information:\n\n1. Full Name\n2. Mailing Address\n3. Phone Number\n4. Date of Birth\n5. Occupation\n\nYou will also need to pay a one-time processing fee of $150.00 via gift card to release your winnings.\n\nPlease respond within 7 days or your prize will be forfeited and awarded to an alternate winner.\n\nCongratulations once again!\n\nMrs. Patricia Holmes\nGoogle Online Promotions Coordinator\nRef Code: GGL/WIN/2026/0887",
+      "persuasion_tactics": ["reward", "urgency", "scarcity"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": false,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": false,
+        "requests_financial_info": true,
+        "threatening_tone": false,
+        "embedded_link": false,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 7,
+      "label": 1,
+      "category": "government_impersonation",
+      "from": "refund.notification@irs-taxrefund-portal.com",
+      "reply_to": "processing@irs-taxrefund-portal.com",
+      "to": "user@example.com",
+      "subject": "IRS Notice: You Have a Pending Tax Refund of $1,382.00",
+      "body": "Dear Taxpayer,\n\nAfter reviewing your most recent tax filing, the Internal Revenue Service has determined that you are eligible for a tax refund in the amount of $1,382.00.\n\nThis refund has not yet been processed because the banking information on file is outdated.\n\nTo receive your refund, please verify your identity and update your direct deposit information through our secure portal:\n\nhttps://irs-refund-claim.taxportal-gov.com/verify\n\nPlease note: Failure to verify your information within 10 business days will result in the forfeiture of your refund for the current tax year.\n\nInternal Revenue Service\nRefund Processing Division\nCase ID: IRS-2026-RF-44190\n\nThis communication contains taxpayer confidential information.",
+      "persuasion_tactics": ["authority", "reward", "urgency", "fear"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": true,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 8,
+      "label": 1,
+      "category": "shared_document",
+      "from": "drive-shares-noreply@google-docs-share.com",
+      "reply_to": "noreply@google-docs-share.com",
+      "to": "user@example.com",
+      "subject": "Jennifer Martinez shared a document with you: \"Q2 Budget Review - CONFIDENTIAL\"",
+      "body": "Jennifer Martinez (j.martinez@partner-firm.com) has shared a document with you.\n\nDocument: Q2 Budget Review - CONFIDENTIAL.xlsx\nMessage from Jennifer: \"Hey, please take a look at the updated numbers when you get a chance and let me know your thoughts before the Friday meeting.\"\n\nOpen in Google Docs:\nhttps://docs.google-drive-sharing.com/d/1BxR4mN7pQ2/view?usp=sharing\n\nYou will need to sign in with your Google account to view this document.\n\nThis invitation was sent to user@example.com. If you do not wish to receive these emails, you may adjust your notification settings.",
+      "persuasion_tactics": ["curiosity", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": false,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": false,
+        "threatening_tone": false,
+        "embedded_link": true,
+        "attachment_reference": true
+      }
+    },
+    {
+      "id": 9,
+      "label": 1,
+      "category": "security_alert",
+      "from": "security@app1e-id-support.com",
+      "reply_to": "verify@app1e-id-support.com",
+      "to": "user@example.com",
+      "subject": "Your Apple ID Has Been Locked Due to a Security Concern",
+      "body": "Dear Apple Customer,\n\nYour Apple ID (user@example.com) has been locked because someone attempted to sign in from a new device.\n\nDetails of the attempt:\n  Date: April 13, 2026, 11:58 PM\n  Device: Windows PC\n  Location: Bucharest, Romania\n  IP Address: 185.220.101.44\n\nIf this was not you, your account may have been compromised. Please unlock your account and reset your password immediately:\n\nhttps://appleid.app1e-verify-support.com/unlock\n\nIf you believe this sign-in was legitimate, you may disregard this message.\n\nApple Support\nApple ID | Support | Privacy Policy",
+      "persuasion_tactics": ["fear", "urgency", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": true,
+        "requests_financial_info": false,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": false
+      }
+    },
+    {
+      "id": 10,
+      "label": 1,
+      "category": "invoice_fraud",
+      "from": "accounts@vendorpay-solutions.com",
+      "reply_to": "billing@vendorpay-solutions.com",
+      "to": "accounting@example.com",
+      "subject": "OVERDUE: Invoice #INV-20260331 – Payment Required Immediately",
+      "body": "Dear Accounts Payable,\n\nThis is a final reminder that Invoice #INV-20260331 for $12,750.00 is now 14 days past due.\n\nOriginal Due Date: March 31, 2026\nAmount Due: $12,750.00\nLate Fee (if unpaid by April 18): $637.50\n\nPlease find the invoice attached for your records. To avoid additional late fees and potential service interruption, remit payment immediately via the link below:\n\nhttps://vendorpay-solutions.com/invoice/pay?id=INV20260331&token=a8f3e2\n\nIf payment has already been sent, please disregard this notice and forward your remittance confirmation to billing@vendorpay-solutions.com.\n\nRegards,\nAccounts Receivable Department\nVendorPay Solutions\nPhone: (312) 555-0199\n\n[ATTACHMENT: Invoice_INV-20260331.pdf.exe]",
+      "persuasion_tactics": ["urgency", "fear", "authority"],
+      "structural_indicators": {
+        "spoofed_sender": true,
+        "suspicious_url": true,
+        "generic_greeting": true,
+        "grammar_errors": false,
+        "requests_credentials": false,
+        "requests_financial_info": true,
+        "threatening_tone": true,
+        "embedded_link": true,
+        "attachment_reference": true
+      }
+    }
+  ]
+}

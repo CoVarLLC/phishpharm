@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "description": "Organization-level information vaults — categories of information that ANY persona acting on behalf of that organization should not reveal in an email correspondence. Used at runtime by the predictive classifier: a generic persona simulating a response 'as part of' a given organization is bound by that organization's vault. Per-persona vaults in phishing_response_personas.json layer on role-specific additions; this file captures the shared baseline.",
+    "schema": {
+      "id": "Matches the organization id in phishing_response_personas.json.",
+      "name": "Human-readable organization name.",
+      "industry": "Short description of the org's industry.",
+      "regulatory_environment": "Relevant compliance regimes (HIPAA, PCI-DSS, FERPA, SOX, GLBA, etc.) that constrain disclosure.",
+      "information_vault": "List of information categories that no member of the organization should reveal over email to an unverified counterparty. Each entry has a `category` slug and a plain-language `description`.",
+      "applies_to": "Whether this vault applies to all personas in the org ('all') or a named subset. Default is 'all'."
+    },
+    "notes_for_unaffiliated": "Personas whose `organization_id` is null are unaffiliated (consumer) personas. They have no organization vault — their disclosure rules are entirely defined by their per-persona information_vault."
+  },
+  "organizations": [
+    {
+      "id": "ORG-MERIDIAN",
+      "name": "Meridian Manufacturing Co.",
+      "industry": "Industrial manufacturing",
+      "regulatory_environment": "SOX (financial controls), export controls on certain components, supplier-confidentiality NDAs",
+      "information_vault": [
+        {"category": "outbound_payment_credentials", "description": "Meridian's outgoing bank account and wire-transfer credentials; SWIFT/IBAN of operating accounts."},
+        {"category": "vendor_banking_records", "description": "Bank routing/account numbers on file for any vendor; instructions for changing them."},
+        {"category": "internal_payment_workflow", "description": "Approval thresholds, dual-control rules, names of approvers, and which steps can be skipped under pressure."},
+        {"category": "system_credentials", "description": "ERP, email, and VPN passwords; MFA codes; one-time tokens; SSO recovery questions."},
+        {"category": "employee_PII", "description": "SSNs, home addresses, dates of birth, direct-deposit accounts, salary figures, ID document copies."},
+        {"category": "executive_movements", "description": "Real-time travel plans, vacation/out-of-office windows, or unavailability of executives that would enable impersonation timing."},
+        {"category": "proprietary_operational_data", "description": "Vendor counts, consolidation status, negotiated savings, supplier scorecards, ERP/platform details, customer concentration, and internal forecasts."},
+        {"category": "company_directory_at_scale", "description": "Bulk org charts or directories with names, titles, reporting lines, direct lines, and personal contact for many employees."},
+        {"category": "open_order_or_invoice_detail", "description": "Outstanding invoices/POs and their status to unverified counterparties; payment dates and amounts."},
+        {"category": "customer_data", "description": "Customer lists, contract terms, pricing, and any data covered by an NDA."}
+      ],
+      "applies_to": "all"
+    },
+    {
+      "id": "ORG-HALCYON",
+      "name": "Halcyon Logistics Group",
+      "industry": "Third-party logistics",
+      "regulatory_environment": "SOX, DOT/customs filings, carrier-confidentiality NDAs",
+      "information_vault": [
+        {"category": "outbound_payment_credentials", "description": "Halcyon's operating-account routing/account numbers and wire-initiation credentials."},
+        {"category": "carrier_and_vendor_banking", "description": "Banking details on file for any carrier or vendor and the process for changing them."},
+        {"category": "payment_controls", "description": "AP approval thresholds, dual-control wire procedures, callback policy, and any deviations from policy."},
+        {"category": "system_credentials", "description": "ERP, TMS, WMS, email, and VPN credentials; MFA codes."},
+        {"category": "employee_PII", "description": "Employee SSNs, addresses, DOBs, direct-deposit accounts, ID copies."},
+        {"category": "executive_movements", "description": "CEO/CFO travel plans and out-of-office windows that would enable timing-based impersonation."},
+        {"category": "client_shipment_data", "description": "Customer shipment volumes, routes, schedules, declared values, and any contract pricing."},
+        {"category": "pre_release_financials", "description": "Pre-publication revenue, earnings, EBITDA, customer concentration, segment results."},
+        {"category": "open_invoices_and_freight_bills", "description": "Outstanding payables and receivables, including amounts and aging."},
+        {"category": "company_directory_at_scale", "description": "Bulk directories, org charts, reporting lines, and direct phone numbers."}
+      ],
+      "applies_to": "all"
+    },
+    {
+      "id": "ORG-PULSAR",
+      "name": "Pulsar Technologies",
+      "industry": "B2B SaaS software",
+      "regulatory_environment": "SOC 2, customer DPAs, occasional GDPR/CCPA obligations on customer data",
+      "information_vault": [
+        {"category": "production_credentials", "description": "Cloud provider keys, database credentials, Okta/IdP admin access, deploy keys, signing keys, MFA seeds."},
+        {"category": "customer_data", "description": "Any data stored on behalf of a customer, including PII, content, and usage telemetry."},
+        {"category": "source_code_or_secrets", "description": "Repository contents, internal architecture diagrams, secrets in repos or .env files."},
+        {"category": "infrastructure_details", "description": "Cloud accounts, network topology, security tooling and versions, on-call rotation, incident-response playbooks."},
+        {"category": "employee_PII", "description": "SSNs, home addresses, DOBs, direct-deposit accounts, ID copies, salary figures."},
+        {"category": "pre_release_business_data", "description": "Pre-quarterly financials, ARR/MRR, churn, customer-concentration data, board materials, M&A discussions."},
+        {"category": "internal_processes_under_attack", "description": "Specifics of IT-migration steps, password-reset workflows, or any process that could be mimicked in a follow-up pretext."},
+        {"category": "outbound_payment_credentials", "description": "Pulsar's operating bank credentials and wire-initiation authority."},
+        {"category": "vendor_banking_records", "description": "Banking on file for any vendor and the process for changes."},
+        {"category": "company_directory_at_scale", "description": "Bulk org charts, reporting lines, employee phone numbers."}
+      ],
+      "applies_to": "all"
+    },
+    {
+      "id": "ORG-STONEBRIDGE",
+      "name": "Stonebridge Financial Services",
+      "industry": "Regional bank and wealth management",
+      "regulatory_environment": "GLBA, SOX, BSA/AML, PCI-DSS, FFIEC examinations, customer privacy notices",
+      "information_vault": [
+        {"category": "customer_NPI", "description": "Any nonpublic personal information about a customer: account numbers, balances, transaction history, SSN, DOB, addresses, credentials, or anything covered by GLBA."},
+        {"category": "outbound_payment_credentials", "description": "The bank's own operating credentials, wire authority, and signature controls."},
+        {"category": "payment_and_AML_controls", "description": "Dual-control rules, BSA/AML thresholds, suspicious-activity workflows, exceptions, and whether any can be bypassed."},
+        {"category": "system_credentials", "description": "Core banking, online banking admin, AD/SSO, MFA seeds, fraud-tool credentials."},
+        {"category": "regulator_or_examiner_communications", "description": "Open exam findings, regulator correspondence, internal compliance memos."},
+        {"category": "pre_release_financials", "description": "Pre-publication earnings, allowance estimates, deposit composition, loan-loss reserves."},
+        {"category": "employee_PII", "description": "Employee SSNs, addresses, DOBs, direct-deposit accounts, salary figures, ID copies."},
+        {"category": "internal_legal_or_litigation", "description": "Pending litigation, internal investigations, legal holds, attorney-client communications."},
+        {"category": "incident_or_fraud_intelligence", "description": "Active fraud investigations, internal indicators of compromise, BEC patterns recently observed."},
+        {"category": "customer_or_employee_directory_at_scale", "description": "Bulk lists of customers or employees with contact details or reporting structure."}
+      ],
+      "applies_to": "all"
+    },
+    {
+      "id": "ORG-CEDARVIEW",
+      "name": "Cedarview Regional Health",
+      "industry": "Healthcare provider",
+      "regulatory_environment": "HIPAA (PHI), HITECH, state breach-notification laws, PCI-DSS for payments, EMTALA for clinical operations",
+      "information_vault": [
+        {"category": "patient_PHI", "description": "Any protected health information — diagnoses, treatments, test results, visit records, MRN, insurance details, claims data, or anything that identifies a patient combined with health information."},
+        {"category": "patient_billing_or_payment", "description": "Patient account numbers, payment-card data, balances, payment-plan terms, or anything that would enable charging or modifying a patient account."},
+        {"category": "remittance_or_clearinghouse_banking", "description": "EFT/ERA banking details, clearinghouse routing setup, insurer-payment configuration, and the process for changing them."},
+        {"category": "system_credentials", "description": "EHR/EMR credentials, billing-system access, AD/SSO, MFA codes, VPN, remote-support tools."},
+        {"category": "employee_PII", "description": "Staff SSNs, addresses, DOBs, direct-deposit, salary, ID copies, license numbers."},
+        {"category": "license_and_credential_records", "description": "Clinician license numbers, DEA numbers, credentialing files, malpractice details."},
+        {"category": "outbound_payment_credentials", "description": "Hospital operating-account credentials and wire-initiation authority."},
+        {"category": "vendor_or_insurer_records", "description": "Banking on file for vendors/insurers, contract terms, and the process for changing them."},
+        {"category": "internal_clinical_processes", "description": "Internal workflows, on-call schedules, security/IT processes that an attacker could mimic in follow-up pretexts."},
+        {"category": "patient_or_employee_directory_at_scale", "description": "Bulk patient/employee directories, scheduling records, or contact lists."}
+      ],
+      "applies_to": "all"
+    },
+    {
+      "id": "ORG-NORTHWIND",
+      "name": "Northwind State University",
+      "industry": "Public university",
+      "regulatory_environment": "FERPA (student records), GLBA (financial aid), HIPAA (campus health), Title IV (federal aid), state public-records laws",
+      "information_vault": [
+        {"category": "student_education_records", "description": "Anything FERPA-protected — grades, transcripts, disciplinary records, enrollment, financial aid records, course-level performance, identifiable directory data beyond what's already public."},
+        {"category": "student_or_employee_PII", "description": "SSNs, FSA IDs, DOBs, home addresses, banking/direct deposit, ID copies, financial-aid eligibility detail."},
+        {"category": "system_credentials", "description": "SIS, LMS, payroll, financial-aid, AD/SSO, MFA, VPN, research-cluster credentials."},
+        {"category": "research_data_and_grant_detail", "description": "Unpublished research data, grant budgets, restricted-data security plans, IRB-protected data."},
+        {"category": "outbound_payment_credentials", "description": "University operating credentials, wire-initiation authority, bursar disbursement controls."},
+        {"category": "vendor_banking_records", "description": "Banking on file for any vendor and the process for changing it."},
+        {"category": "donor_or_alumni_records", "description": "Donor giving history, advancement notes, alumni contact information."},
+        {"category": "campus_security_or_health_records", "description": "Campus public-safety incident reports, student-health records, counseling records."},
+        {"category": "internal_processes_under_attack", "description": "IT-migration steps, password-reset workflows, financial-aid disbursement workflow specifics."},
+        {"category": "student_or_employee_directory_at_scale", "description": "Bulk student or employee directories with contact details and reporting structure."}
+      ],
+      "applies_to": "all"
+    }
+  ]
+}

@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Correspondence viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f6f8fc;
+    color: #202124;
+    font-family: 'Google Sans', 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    height: 100vh;
+  }
+  .sidebar, .rightbar {
+    background: #fff;
+    border-right: 1px solid #e8eaed;
+    overflow-y: auto;
+  }
+  .rightbar { border-right: none; border-left: 1px solid #e8eaed; }
+  .sidebar-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e8eaed;
+    background: #fff;
+    position: sticky; top: 0; z-index: 1;
+  }
+  .sidebar-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .file-row { display: flex; gap: 6px; align-items: center; }
+  .file-row label {
+    font-size: 11px; color: #5f6368;
+    border: 1px solid #dadce0; border-radius: 4px;
+    padding: 4px 8px; cursor: pointer; background: #fff;
+  }
+  .file-row label:hover { background: #f1f3f4; }
+  .file-row input[type=file] { display: none; }
+  .file-row .name { font-size: 11px; color: #5f6368; }
+  .filter-row {
+    display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+  }
+  .filter-row select, .filter-row input[type=text] {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 7px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background: #fff;
+    color: #202124;
+    font-family: inherit;
+  }
+  .corr-list { list-style: none; padding: 0; margin: 0; }
+  .corr-item {
+    padding: 9px 14px;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+  }
+  .corr-item:hover { background: #f8f9fa; }
+  .corr-item.active { background: #e8f0fe; }
+  .corr-item .cid {
+    font-size: 11px; color: #5f6368;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+  }
+  .corr-item .title {
+    font-size: 12px; color: #202124; margin-top: 2px; line-height: 1.35;
+  }
+  .corr-item .meta {
+    font-size: 10.5px; color: #5f6368; margin-top: 3px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-block; padding: 1px 6px; border-radius: 9px;
+    font-size: 10px; font-weight: 500;
+  }
+  .badge-genuine { background: #e6f4ea; color: #137333; }
+  .badge-obvious { background: #fce8e6; color: #c5221f; }
+  .badge-soph { background: #feefc3; color: #b06000; }
+  .badge-spear { background: #f3e8fd; color: #8430ce; }
+
+  .main { overflow-y: auto; background: #fff; }
+  .main-inner { max-width: 720px; margin: 0 auto; padding-bottom: 60px; }
+  .thread-header {
+    padding: 16px 18px 10px;
+    border-bottom: 1px solid #e8eaed;
+  }
+  .thread-header h1 {
+    font-size: 18px; font-weight: 400; margin: 0; color: #202124;
+  }
+  .thread-header .sub {
+    font-size: 11px; color: #5f6368; margin-top: 6px;
+  }
+  .email-card { border-bottom: 1px solid #e8eaed; }
+  .email-card:last-child { border-bottom: none; }
+  .header-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    cursor: pointer; padding: 11px 18px;
+  }
+  .header-row:hover { background: #f8f9fa; }
+  .from-line { font-size: 12.5px; color: #202124; font-weight: 500; }
+  .addr { font-size: 11px; color: #5f6368; font-weight: 400; }
+  .date { font-size: 11px; color: #5f6368; white-space: nowrap; }
+  .body-text {
+    font-size: 12.5px; color: #3c4043; line-height: 1.6;
+    white-space: pre-wrap; word-wrap: break-word;
+    padding: 0 18px 16px 64px;
+  }
+  .collapse-preview {
+    font-size: 11px; color: #5f6368;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 460px; margin-top: 2px;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: #fff;
+    flex-shrink: 0; margin-right: 12px;
+  }
+  .meta-strip {
+    padding: 4px 18px 11px 64px;
+    font-size: 10.5px; color: #5f6368;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .meta-strip .action { font-weight: 500; }
+  .status-row {
+    padding: 9px 18px 9px 64px;
+    font-size: 11.5px;
+    color: #5f6368;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e8eaed;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .status-row .status-who { font-weight: 500; color: #3c4043; }
+  .status-row .reasoning { flex-basis: 100%; }
+  .action-reply { color: #1a73e8; }
+  .action-no_reply { color: #5f6368; }
+  .action-report_as_phishing { color: #d93025; }
+  .action-verify_out_of_band { color: #b06000; }
+  .action-disengage { color: #d93025; }
+  .action-continue { color: #137333; }
+  .action-end_success { color: #d93025; }
+  .action-end_giveup { color: #5f6368; }
+
+  .hl {
+    background: #fbec5d;
+    padding: 1px 0;
+    border-radius: 2px;
+    cursor: help;
+    box-decoration-break: clone;
+  }
+  .hl:hover { background: #f7e025; }
+  .hl-recipient { background: #ffb3b3; }
+  .hl-recipient:hover { background: #ff9b9b; }
+  .hl-sender { background: #c5e1f7; }
+  .hl-sender:hover { background: #a8d2f0; }
+
+  .rightbar-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e8eaed;
+  }
+  .rightbar-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #5f6368;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .rightbar-section .kv { margin-bottom: 6px; }
+  .rightbar-section .k {
+    font-size: 10.5px; color: #5f6368; text-transform: uppercase;
+    letter-spacing: 0.3px; margin-bottom: 1px;
+  }
+  .rightbar-section .v {
+    font-size: 12px; color: #202124; line-height: 1.4;
+  }
+  .rightbar-section ul {
+    margin: 4px 0 0 0; padding-left: 18px;
+  }
+  .intent-section {
+    margin: 24px 0 8px 0;
+    border-top: 2px solid #e8eaed;
+    padding-top: 14px;
+  }
+  .intent-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #5f6368; margin-bottom: 10px;
+  }
+  .intent-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background: #fafafa;
+    font-size: 12px;
+  }
+  .intent-card + .intent-card { margin-top: 0; }
+  .intent-card .ic-row { margin-bottom: 4px; }
+  .intent-card .ic-label {
+    font-size: 10px; color: #5f6368; text-transform: uppercase;
+    letter-spacing: 0.3px; margin-bottom: 1px;
+  }
+  .intent-card .ic-val { color: #202124; line-height: 1.4; }
+  .intent-card.targets-protected {
+    border-color: #f28b82;
+    background: #fff8f7;
+  }
+  .intent-card .ic-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 600;
+    padding: 1px 6px; border-radius: 10px;
+    margin-right: 4px; margin-bottom: 4px;
+  }
+  .ic-badge.danger { background: #fce8e6; color: #c5221f; }
+  .ic-badge.safe   { background: #e6f4ea; color: #137333; }
+  .ic-badge.cat    { background: #e8eaed; color: #3c4043; }
+  .rightbar-section li {
+    font-size: 12px; color: #202124; margin-bottom: 3px; line-height: 1.4;
+  }
+
+  .empty-state {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; color: #5f6368; font-size: 13px;
+    flex-direction: column; gap: 8px; padding: 40px;
+  }
+  .empty-state .big { font-size: 16px; color: #202124; }
+
+  .anno-bar {
+    position: sticky; bottom: 0;
+    background: #202124; color: #fff;
+    padding: 6px 12px;
+    display: flex; gap: 8px; align-items: center;
+    font-size: 11px;
+  }
+  .anno-bar button {
+    background: #fbec5d; color: #202124; border: none;
+    padding: 4px 10px; border-radius: 3px;
+    font-size: 11px; cursor: pointer; font-family: inherit; font-weight: 500;
+  }
+  .anno-bar button:hover { background: #f7e025; }
+  .anno-bar .selected-text {
+    color: #fbec5d;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+    font-size: 11.5px;
+  }
+  .stat-grid .label { color: #5f6368; }
+  .stat-grid .val { color: #202124; font-weight: 500; }
+
+  .reasoning {
+    margin-top: 4px;
+    padding: 7px 10px;
+    background: #f1f3f4;
+    border-left: 3px solid #dadce0;
+    font-size: 11.5px;
+    color: #3c4043;
+    line-height: 1.45;
+    font-style: italic;
+  }
+  .reasoning .lbl {
+    font-style: normal; font-weight: 500; color: #5f6368;
+    text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.4px; margin-right: 6px;
+  }
+  .show-reasoning-toggle {
+    margin: 0 18px 8px 64px;
+    font-size: 11px;
+    color: #1a73e8;
+    cursor: pointer;
+    user-select: none;
+  }
+  .red-flags {
+    margin: 4px 18px 8px 64px;
+    font-size: 11px;
+    color: #b06000;
+  }
+  .red-flags .lbl { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- LEFT: file picker + correspondence list -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Correspondences</h2>
+      <div class="file-row">
+        <label>
+          Load JSONL
+          <input type="file" id="file-input" accept=".jsonl,.json,.txt">
+        </label>
+        <span class="name" id="file-name">no file loaded</span>
+      </div>
+      <div class="file-row" style="margin-top: 6px;">
+        <label>
+          Load annotations
+          <input type="file" id="anno-input" accept=".json">
+        </label>
+        <span class="name" id="anno-name">none</span>
+      </div>
+      <div class="filter-row">
+        <select id="filter-type">
+          <option value="">All types</option>
+          <option value="genuine">Genuine only</option>
+          <option value="obvious_phishing">Obvious phishing</option>
+          <option value="sophisticated_phishing">Sophisticated phishing</option>
+        </select>
+        <select id="filter-scenario">
+          <option value="">All scenarios</option>
+        </select>
+        <select id="filter-persona">
+          <option value="">All recipients</option>
+        </select>
+        <input type="text" id="filter-search" placeholder="Search subject / body…">
+      </div>
+      <div style="margin-top: 8px; font-size: 11px; color: #5f6368;" id="list-summary">
+        0 correspondences
+      </div>
+    </div>
+    <ul class="corr-list" id="corr-list"></ul>
+  </aside>
+
+  <!-- CENTER: email thread -->
+  <main class="main" id="main">
+    <div class="empty-state">
+      <div class="big">No correspondence selected</div>
+      <div>Load <code>correspondences.jsonl</code> with the button at top-left,
+        then pick a correspondence from the list.</div>
+    </div>
+  </main>
+
+  <!-- RIGHT: scenario / persona metadata -->
+  <aside class="rightbar" id="rightbar">
+    <div class="empty-state">
+      <div>Scenario details appear here.</div>
+    </div>
+  </aside>
+</div>
+
+<!-- Annotation toolbar (only shown when text is selected) -->
+<div class="anno-bar" id="anno-bar" style="display:none; position: fixed; left: 320px; right: 320px; bottom: 0; z-index: 10;">
+  <span class="selected-text" id="anno-selected"></span>
+  <button id="anno-add">Highlight as leakage</button>
+  <button id="anno-export">Export annotations</button>
+  <button id="anno-clear-all" style="background: #5f6368; color: #fff;">Clear all manual</button>
+</div>
+
+<script>
+// ---------- state ----------
+const state = {
+  correspondences: [],
+  annotations: {},          // { correspondence_id: { turn_index: [{exact_text, category, note}] } }
+  manualAnnotations: {},    // same shape, persisted to localStorage
+  selectedId: null,
+  showReasoning: false,
+};
+
+// ---------- persistence ----------
+const LS_KEY = 'phishpharm_manual_annotations_v1';
+function loadManual() {
+  try { state.manualAnnotations = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+  catch(e) { state.manualAnnotations = {}; }
+}
+function saveManual() {
+  localStorage.setItem(LS_KEY, JSON.stringify(state.manualAnnotations));
+}
+loadManual();
+
+// ---------- helpers ----------
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+function firstName(name) { return (name || '').split(/\s+/)[0] || ''; }
+function initials(name) {
+  const parts = (name || '').trim().split(/\s+/);
+  if (parts.length === 0) return '??';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+}
+function hashColor(seed, palette) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return palette[Math.abs(h) % palette.length];
+}
+const SENDER_COLORS = ['#7baaf7', '#9c8cf7', '#f78b8b', '#f0a35a'];
+const RECIPIENT_COLORS = ['#81c995', '#f28b82', '#fdd663', '#a4c2f4'];
+
+// Human-readable descriptions of the action a turn represents when it carries
+// no email body (so it renders as a status row, not a blank email card).
+const ACTION_LABELS = {
+  reply: 'replied',
+  no_reply: 'read the message but did not reply',
+  report_as_phishing: 'reported the message as phishing',
+  verify_out_of_band: 'paused to verify through another channel',
+  disengage: 'disengaged from the thread',
+  end_success: 'ended the thread (objective reached, or all extractable info gathered)',
+  end_giveup: 'gave up on this target',
+  continue: 'continued the thread',
+};
+
+function fakeDate(turnIndex) {
+  const base = new Date(2026, 3, 6, 9, 14, 0); // Apr 6, 2026 09:14
+  // Add ~5-10 hours per turn, alternating slightly
+  base.setHours(base.getHours() + turnIndex * 7 + (turnIndex % 2 ? 2 : -1));
+  return base.toLocaleString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric',
+    year: 'numeric', hour: 'numeric', minute: '2-digit'
+  });
+}
+
+function turnPreview(body) {
+  return (body || '').split('\n').find(l => l.trim().length > 20) || '';
+}
+
+// Get effective highlights for a turn = data highlights + LLM annotations + manual annotations
+function getHighlights(corrId, turnIndex, dataHighlights) {
+  const annot = (state.annotations[corrId] || {})[String(turnIndex)] || [];
+  const manual = (state.manualAnnotations[corrId] || {})[String(turnIndex)] || [];
+  const base = dataHighlights || [];
+  return [...base, ...annot, ...manual.map(m => ({...m, source: 'manual'}))];
+}
+
+// Render a body with highlights. Highlights are {text/exact_text, note, source?, category?}
+function renderBody(body, highlights, role) {
+  if (!highlights || !highlights.length) return escapeHtml(body);
+
+  // Normalize and locate every highlight; resolve overlaps by taking the
+  // first-encountered span.
+  const spans = [];
+  for (const h of highlights) {
+    const text = h.text || h.exact_text;
+    if (!text) continue;
+    const idx = body.indexOf(text);
+    if (idx === -1) continue;
+    spans.push({ start: idx, end: idx + text.length, h });
+  }
+  spans.sort((a, b) => a.start - b.start);
+  // Drop overlaps
+  const kept = [];
+  let cursor = 0;
+  for (const s of spans) {
+    if (s.start >= cursor) {
+      kept.push(s);
+      cursor = s.end;
+    }
+  }
+
+  if (!kept.length) return escapeHtml(body);
+
+  let out = '';
+  let pos = 0;
+  for (const s of kept) {
+    if (s.start > pos) out += escapeHtml(body.slice(pos, s.start));
+    const note = s.h.note || s.h.category || 'flagged';
+    const src = s.h.source === 'manual' ? 'hl-recipient'
+              : (role === 'recipient' ? 'hl-recipient' : 'hl-sender');
+    out += `<span class="hl ${src}" title="${escapeHtml(note)}">${escapeHtml(body.slice(s.start, s.end))}</span>`;
+    pos = s.end;
+  }
+  if (pos < body.length) out += escapeHtml(body.slice(pos));
+  return out;
+}
+
+// ---------- list rendering ----------
+function populateFilters() {
+  const scenSel = document.getElementById('filter-scenario');
+  const persSel = document.getElementById('filter-persona');
+  const scens = new Map(), pers = new Map();
+  for (const c of state.correspondences) {
+    if (!scens.has(c.scenario_id)) scens.set(c.scenario_id, c.scenario_name || c.scenario_id);
+    if (!pers.has(c.recipient_persona_id)) pers.set(c.recipient_persona_id, c.recipient_name || c.recipient_persona_id);
+  }
+  scenSel.innerHTML = '<option value="">All scenarios</option>' +
+    [...scens.entries()].sort().map(([id, name]) =>
+      `<option value="${escapeHtml(id)}">${escapeHtml(id)} — ${escapeHtml(name)}</option>`
+    ).join('');
+  persSel.innerHTML = '<option value="">All recipients</option>' +
+    [...pers.entries()].sort().map(([id, name]) =>
+      `<option value="${escapeHtml(id)}">${escapeHtml(id)} — ${escapeHtml(name)}</option>`
+    ).join('');
+}
+
+function filteredCorrespondences() {
+  const t = document.getElementById('filter-type').value;
+  const s = document.getElementById('filter-scenario').value;
+  const p = document.getElementById('filter-persona').value;
+  const q = document.getElementById('filter-search').value.trim().toLowerCase();
+  return state.correspondences.filter(c => {
+    if (t && c.scenario_type !== t) return false;
+    if (s && c.scenario_id !== s) return false;
+    if (p && c.recipient_persona_id !== p) return false;
+    if (q) {
+      const hay = [c.scenario_name, c.recipient_name]
+        .concat((c.turns || []).map(t => `${t.subject} ${t.body}`))
+        .join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function renderList() {
+  const list = document.getElementById('corr-list');
+  const items = filteredCorrespondences();
+  document.getElementById('list-summary').textContent =
+    `${items.length} of ${state.correspondences.length} correspondences`;
+  list.innerHTML = items.map(c => {
+    const typeBadge = ({
+      genuine: '<span class="badge badge-genuine">genuine</span>',
+      obvious_phishing: '<span class="badge badge-obvious">obvious</span>',
+      sophisticated_phishing: '<span class="badge badge-soph">sophisticated</span>',
+    })[c.scenario_type] || '';
+    const spear = c.is_spear_phishing ? '<span class="badge badge-spear">spear</span>' : '';
+    const turns = c.turn_count != null ? `${c.turn_count} turns` : '';
+    return `
+      <li class="corr-item ${c.correspondence_id === state.selectedId ? 'active' : ''}"
+          data-id="${escapeHtml(c.correspondence_id)}">
+        <div class="cid">${escapeHtml(c.correspondence_id)}</div>
+        <div class="title">${escapeHtml(c.scenario_name || '')}</div>
+        <div class="meta">
+          ${typeBadge}${spear}
+          <span>${escapeHtml(c.recipient_name || '')}</span>
+          <span>${turns}</span>
+        </div>
+      </li>`;
+  }).join('');
+  list.querySelectorAll('.corr-item').forEach(el => {
+    el.addEventListener('click', () => {
+      state.selectedId = el.dataset.id;
+      renderList();
+      renderMain();
+      renderRight();
+    });
+  });
+}
+
+// ---------- main thread render ----------
+function renderMain() {
+  const main = document.getElementById('main');
+  const c = state.correspondences.find(x => x.correspondence_id === state.selectedId);
+  if (!c) {
+    main.innerHTML = `<div class="empty-state"><div class="big">No correspondence selected</div></div>`;
+    return;
+  }
+  const senderName = c.sender_persona ? c.sender_persona.name : '(sender)';
+  const senderEmail = c.sender_persona ? c.sender_persona.email : '';
+  const recipientName = c.recipient_name || '';
+  const recipientEmail = c.recipient_email || '';
+  const senderColor = hashColor(senderName, SENDER_COLORS);
+  const recipientColor = hashColor(recipientName, RECIPIENT_COLORS);
+
+  const initialSubject = (c.turns && c.turns[0] && c.turns[0].subject) || c.scenario_name || '';
+
+  const cards = (c.turns || []).map((t, i) => {
+    const hasBody = t.body && t.body.trim().length > 0;
+    if (!hasBody) {
+      // No email body — this turn is an action the persona took (read and
+      // ignored, reported, verified out of band, disengaged, or the sender
+      // ended the thread). Render it as a status row, never a blank email card.
+      const who = t.role === 'sender' ? senderName : recipientName;
+      const label = ACTION_LABELS[t.action] || t.action || 'took no action';
+      return `
+        <div class="status-row">
+          <span class="status-who">${escapeHtml(who)}</span>
+          <span>${escapeHtml(label)}</span>
+          ${t.action ? `<span class="action action-${escapeHtml(t.action)}">[${escapeHtml(t.action)}]</span>` : ''}
+          ${t.reasoning ? `<div class="reasoning"><span class="lbl">reasoning</span>${escapeHtml(t.reasoning)}</div>` : ''}
+        </div>`;
+    }
+    const isSender = t.role === 'sender';
+    const fromName = isSender ? senderName : recipientName;
+    const fromEmail = isSender ? senderEmail : recipientEmail;
+    const toName = isSender ? recipientName : senderName;
+    const color = isSender ? senderColor : recipientColor;
+    const inits = initials(fromName);
+    const dateStr = fakeDate(i);
+    const highlights = getHighlights(c.correspondence_id, i, t.highlights);
+    const bodyHtml = renderBody(t.body || '', highlights, t.role);
+
+    const redFlags = (t.extra && t.extra.red_flags_noticed) || [];
+    const reasoning = t.reasoning;
+    const stage = t.extra && t.extra.stage;
+
+    return `
+      <div class="email-card" data-turn="${i}" data-turn-index="${t.turn_index}">
+        <div class="header-row">
+          <div style="display: flex; align-items: flex-start;">
+            <div class="avatar" style="background: ${color};">${escapeHtml(inits)}</div>
+            <div>
+              <div class="from-line">${escapeHtml(fromName)} <span class="addr">&lt;${escapeHtml(fromEmail)}&gt;</span></div>
+              <div style="font-size: 11px; color: #5f6368; margin-top: 1px;">to ${escapeHtml(toName)}</div>
+            </div>
+          </div>
+          <div class="date">${escapeHtml(dateStr)}</div>
+        </div>
+        <div class="meta-strip">
+          <span class="action action-${escapeHtml(t.action || '')}">[${escapeHtml(t.action || '')}]</span>
+          ${stage ? `<span>stage: ${escapeHtml(stage)}</span>` : ''}
+          ${highlights.length ? `<span>${highlights.length} highlight${highlights.length===1?'':'s'}</span>` : ''}
+        </div>
+        ${redFlags.length ? `
+          <div class="red-flags">
+            <span class="lbl">recipient flagged:</span> ${redFlags.map(escapeHtml).join('; ')}
+          </div>` : ''}
+        ${reasoning && state.showReasoning ? `
+          <div class="reasoning" style="margin: 0 18px 8px 64px;">
+            <span class="lbl">${t.role}'s in-character reasoning</span>${escapeHtml(reasoning)}
+          </div>` : ''}
+        <div class="body-text" data-corr="${escapeHtml(c.correspondence_id)}" data-turn-index="${t.turn_index}">${bodyHtml}</div>
+      </div>`;
+  }).join('');
+
+  const intentHtml = (c.intent_projections && c.intent_projections.length) ? `
+    <div class="intent-section">
+      <div class="intent-section-title">Intent projection</div>
+      ${c.intent_projections.map(p => {
+        const danger = p.targets_protected_category;
+        const cats = (p.targeted_categories || []).map(cat =>
+          `<span class="ic-badge cat">${escapeHtml(cat)}</span>`).join('');
+        const conf = p.confidence || '';
+        const confBadge = `<span class="ic-badge ${danger ? 'danger' : 'safe'}">${escapeHtml(conf)} confidence</span>`;
+        return `<div class="intent-card ${danger ? 'targets-protected' : ''}">
+          <div class="ic-row">
+            ${danger ? '<span class="ic-badge danger">targets protected info</span>' : '<span class="ic-badge safe">no protected categories</span>'}
+            ${confBadge}
+          </div>
+          <div class="ic-row"><div class="ic-label">Apparent goal</div>
+            <div class="ic-val">${escapeHtml(p.apparent_sender_goal || '')}</div></div>
+          <div class="ic-row"><div class="ic-label">Projected next ask</div>
+            <div class="ic-val">${escapeHtml(p.projected_next_ask || '')}</div></div>
+          ${cats ? `<div class="ic-row"><div class="ic-label">Targeted categories</div><div class="ic-val">${cats}</div></div>` : ''}
+          <div class="ic-row"><div class="ic-label">Reasoning</div>
+            <div class="ic-val">${escapeHtml(p.reasoning || '')}</div></div>
+        </div>`;
+      }).join('')}
+    </div>` : '';
+
+  main.innerHTML = `
+    <div class="main-inner">
+      <div class="thread-header">
+        <h1>${escapeHtml(initialSubject)}</h1>
+        <div class="sub">
+          ${(c.turns || []).filter(t => t.body && t.body.trim()).length} messages between
+          <strong>${escapeHtml(senderEmail || senderName)}</strong>
+          and
+          <strong>${escapeHtml(recipientEmail || recipientName)}</strong>
+        </div>
+        <div class="show-reasoning-toggle" id="toggle-reasoning">
+          ${state.showReasoning ? '▾ Hide in-character reasoning' : '▸ Show in-character reasoning per turn'}
+        </div>
+      </div>
+      ${cards}
+      ${intentHtml}
+    </div>`;
+
+  document.getElementById('toggle-reasoning').addEventListener('click', () => {
+    state.showReasoning = !state.showReasoning;
+    renderMain();
+  });
+}
+
+// ---------- right rail ----------
+function renderRight() {
+  const right = document.getElementById('rightbar');
+  const c = state.correspondences.find(x => x.correspondence_id === state.selectedId);
+  if (!c) {
+    right.innerHTML = `<div class="empty-state"><div>Scenario details appear here.</div></div>`;
+    return;
+  }
+  const sp = c.sender_persona || {};
+  const sensitive = c.sensitive_information_sought || [];
+
+  // Termination + counts
+  const totalHighlights = (c.turns || []).reduce((n, t) =>
+    n + getHighlights(c.correspondence_id, t.turn_index, t.highlights).length, 0);
+
+  right.innerHTML = `
+    <div class="rightbar-section">
+      <h3>Correspondence</h3>
+      <div class="stat-grid">
+        <div class="label">Type</div><div class="val">${escapeHtml(c.scenario_type || '')}</div>
+        <div class="label">Category</div><div class="val">${escapeHtml(c.category || '')}</div>
+        <div class="label">Spear-phishing</div><div class="val">${c.is_spear_phishing ? 'yes' : 'no'}</div>
+        <div class="label">Label</div><div class="val">${c.label === 1 ? '1 (phishing)' : '0 (genuine)'}</div>
+        <div class="label">Turns</div><div class="val">${c.turn_count || (c.turns||[]).length}</div>
+        <div class="label">Highlights</div><div class="val">${totalHighlights}</div>
+        <div class="label">Ended</div><div class="val">${escapeHtml(c.termination_reason || '')}</div>
+        <div class="label">Model</div><div class="val">${escapeHtml(c.model || '')}</div>
+      </div>
+    </div>
+    ${c.attacker_goal ? `
+    <div class="rightbar-section">
+      <h3>Attacker goal</h3>
+      <div class="v">${escapeHtml(c.attacker_goal)}</div>
+    </div>` : ''}
+    ${sensitive.length ? `
+    <div class="rightbar-section">
+      <h3>Information sought</h3>
+      <ul>${sensitive.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+    </div>` : ''}
+    <div class="rightbar-section">
+      <h3>Sender persona</h3>
+      <div class="kv"><div class="k">Name</div><div class="v">${escapeHtml(sp.name || '')}</div></div>
+      <div class="kv"><div class="k">Email</div><div class="v">${escapeHtml(sp.email || '')}</div></div>
+      <div class="kv"><div class="k">Role</div><div class="v">${escapeHtml(sp.role || '')}</div></div>
+      ${sp.communication_style ? `<div class="kv"><div class="k">Style</div><div class="v">${escapeHtml(sp.communication_style)}</div></div>` : ''}
+      ${sp.constraints ? `<div class="kv"><div class="k">Constraints</div><div class="v">${escapeHtml(sp.constraints)}</div></div>` : ''}
+    </div>
+    <div class="rightbar-section">
+      <h3>Recipient persona</h3>
+      <div class="kv"><div class="k">Name</div><div class="v">${escapeHtml(c.recipient_name || '')}</div></div>
+      <div class="kv"><div class="k">Email</div><div class="v">${escapeHtml(c.recipient_email || '')}</div></div>
+      <div class="kv"><div class="k">Persona ID</div><div class="v">${escapeHtml(c.recipient_persona_id || '')}</div></div>
+      <div class="kv"><div class="k">Org</div><div class="v">${escapeHtml(c.recipient_organization_id || '(none)')}</div></div>
+      <div class="kv"><div class="k">Vulnerability</div><div class="v">${escapeHtml(c.recipient_vulnerability_level || '')}</div></div>
+      <div class="kv"><div class="k">Archetype</div><div class="v">${escapeHtml(c.recipient_archetype || '')}</div></div>
+    </div>`;
+}
+
+// ---------- file loading ----------
+function parseJsonl(text) {
+  const out = [];
+  for (const line of text.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    try { out.push(JSON.parse(trimmed)); }
+    catch (e) { console.warn('skipping malformed line', e); }
+  }
+  return out;
+}
+
+document.getElementById('file-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('file-name').textContent = file.name;
+  const text = await file.text();
+  // Accept either JSONL (one record per line) or a JSON array
+  let records;
+  if (file.name.endsWith('.json') && text.trim().startsWith('[')) {
+    records = JSON.parse(text);
+  } else {
+    records = parseJsonl(text);
+  }
+  state.correspondences = records;
+  state.selectedId = records.length ? records[0].correspondence_id : null;
+  populateFilters();
+  renderList();
+  renderMain();
+  renderRight();
+});
+
+document.getElementById('anno-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('anno-name').textContent = file.name;
+  const text = await file.text();
+  // Accept two shapes:
+  //  A) flat list: [{correspondence_id, turn_index, exact_text, category, note}, ...]
+  //  B) nested:    { correspondence_id: { turn_index: [{exact_text, category, note}, ...] } }
+  let parsed;
+  try { parsed = JSON.parse(text); }
+  catch(err) { alert('annotations file is not valid JSON'); return; }
+  const nested = {};
+  if (Array.isArray(parsed)) {
+    for (const r of parsed) {
+      const cid = r.correspondence_id;
+      const ti = String(r.turn_index);
+      if (!nested[cid]) nested[cid] = {};
+      if (!nested[cid][ti]) nested[cid][ti] = [];
+      nested[cid][ti].push({
+        exact_text: r.exact_text,
+        category: r.category,
+        note: r.note,
+      });
+    }
+  } else {
+    Object.assign(nested, parsed);
+  }
+  state.annotations = nested;
+  renderMain();
+  renderRight();
+});
+
+// ---------- filter handlers ----------
+['filter-type', 'filter-scenario', 'filter-persona'].forEach(id =>
+  document.getElementById(id).addEventListener('change', renderList));
+document.getElementById('filter-search').addEventListener('input', renderList);
+
+// ---------- manual highlighting via text selection ----------
+let lastSelection = null;
+document.addEventListener('mouseup', () => {
+  const sel = window.getSelection();
+  const text = sel ? sel.toString() : '';
+  if (!text || text.length < 4) {
+    document.getElementById('anno-bar').style.display = 'none';
+    lastSelection = null;
+    return;
+  }
+  // Walk up to find the .body-text container and extract corr/turn data
+  let node = sel.anchorNode;
+  while (node && (!node.classList || !node.classList.contains('body-text'))) {
+    node = node.parentNode;
+  }
+  if (!node) {
+    document.getElementById('anno-bar').style.display = 'none';
+    return;
+  }
+  lastSelection = {
+    corrId: node.dataset.corr,
+    turnIndex: parseInt(node.dataset.turnIndex, 10),
+    text,
+  };
+  document.getElementById('anno-selected').textContent = `"${text.slice(0, 80)}${text.length > 80 ? '…' : ''}"`;
+  document.getElementById('anno-bar').style.display = 'flex';
+});
+
+document.getElementById('anno-add').addEventListener('click', () => {
+  if (!lastSelection) return;
+  const note = prompt(
+    `Note for this highlight (what kind of information leakage is this?):`,
+    'information leakage'
+  );
+  if (note === null) return; // cancelled
+  const { corrId, turnIndex, text } = lastSelection;
+  if (!state.manualAnnotations[corrId]) state.manualAnnotations[corrId] = {};
+  if (!state.manualAnnotations[corrId][String(turnIndex)]) state.manualAnnotations[corrId][String(turnIndex)] = [];
+  state.manualAnnotations[corrId][String(turnIndex)].push({
+    exact_text: text,
+    category: 'manual',
+    note: note || 'manual',
+  });
+  saveManual();
+  document.getElementById('anno-bar').style.display = 'none';
+  renderMain();
+  renderRight();
+});
+
+document.getElementById('anno-export').addEventListener('click', () => {
+  // Export in the flat-list shape — directly re-loadable
+  const flat = [];
+  for (const [cid, turns] of Object.entries(state.manualAnnotations)) {
+    for (const [ti, list] of Object.entries(turns)) {
+      for (const h of list) {
+        flat.push({
+          correspondence_id: cid,
+          turn_index: parseInt(ti, 10),
+          exact_text: h.exact_text,
+          category: h.category || 'manual',
+          note: h.note || '',
+        });
+      }
+    }
+  }
+  const blob = new Blob([JSON.stringify(flat, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'manual_annotations.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('anno-clear-all').addEventListener('click', () => {
+  if (!confirm('Clear all manual annotations (LLM annotations and dataset highlights remain)?')) return;
+  state.manualAnnotations = {};
+  saveManual();
+  renderMain();
+  renderRight();
+});
+
+// Initial empty render
+renderList();
+renderMain();
+renderRight();
+</script>
+</body>
+</html>

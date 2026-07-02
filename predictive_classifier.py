@@ -195,24 +195,14 @@ RISK_SYSTEM_PROMPT = (
     "message, the apparent sender's side of each conversation was continued naturally, and every "
     "predicted correspondence was analyzed for whether it led the recipient to disclose protected "
     "categories of information.\n\n"
-    "Use these principles:\n\n"
-    "1. LEAKAGE BREADTH AND SEVERITY. A legitimate message continued naturally does not steer "
-    "recipients into disclosing protected information. A phishing message does, across many "
-    "personality types, escalating over the thread, reaching more sensitive categories. Weigh "
-    "breadth (how many personas disclosed), severity, how early disclosure happened, and whether "
-    "the predicted sender actively solicited protected info.\n\n"
-    "2. SUSPICION RATE. The terminal_action_distribution field shows how each simulated "
-    "conversation ended. A high rate of verify_out_of_band, report_as_suspicious, or disengage "
-    "is itself a risk signal — recipients are detecting something wrong even when they do not "
-    "explicitly leak information. Legitimate mail does not trigger widespread wariness across "
-    "personality types. Weight this signal, especially when direct leakage is low.\n\n"
-    "3. INTENT PROJECTION. If intent_projections are provided, they represent what an analyst "
-    "predicted the sender would ask for next, based on threads where no leakage occurred yet. "
-    "A sender whose projected next ask targets protected categories is a strong signal of "
-    "social engineering even if the current thread only contains rapport-building or scheduling. "
-    "Multi-stage attacks deliberately defer the sensitive ask — treat intent toward protected "
-    "categories as meaningful evidence.\n\n"
-    "Base your verdict on the combination of all three signals. Return the required JSON."
+    "Use this principle: a LEGITIMATE message, when the conversation is continued naturally, does "
+    "not steer recipients into disclosing protected information — the sender simply has no such "
+    "objective. A PHISHING or social-engineering message does steer toward it, and the pull shows "
+    "up across multiple personality types, escalates over the thread, and reaches more sensitive "
+    "categories. Weigh breadth (how many personas were led to disclose), severity, how early "
+    "disclosure happened, whether the predicted sender actively solicited protected info, and how "
+    "many personas independently disengaged or flagged the message as suspicious.\n\n"
+    "Base your verdict primarily on these aggregated leakage findings. Return the required JSON."
 )
 
 
@@ -381,81 +371,11 @@ def analyze_leakage(client: Any, model: str, thread: list[dict[str, Any]],
 
 
 # --------------------------------------------------------------------------
-# Step 2b: intent projection for low-leakage threads
-# --------------------------------------------------------------------------
-
-INTENT_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "apparent_sender_goal": {
-            "type": "string",
-            "description": "What the sender appears to be trying to accomplish, inferred from the thread.",
-        },
-        "projected_next_ask": {
-            "type": "string",
-            "description": "What the sender would most plausibly ask for or attempt in their next message or a follow-up.",
-        },
-        "targets_protected_category": {
-            "type": "boolean",
-            "description": "Does the projected next ask target any protected information category?",
-        },
-        "targeted_categories": {
-            "type": "array",
-            "items": {"type": "string"},
-            "description": "Which protected categories the projected ask would target. Empty if none.",
-        },
-        "confidence": {
-            "type": "string",
-            "enum": ["low", "medium", "high"],
-            "description": "Confidence in this projection based on the evidence in the thread.",
-        },
-        "reasoning": {
-            "type": "string",
-            "description": "1-2 sentences explaining what in the thread led to this projection.",
-        },
-    },
-    "required": ["apparent_sender_goal", "projected_next_ask", "targets_protected_category",
-                 "targeted_categories", "confidence", "reasoning"],
-    "additionalProperties": False,
-}
-
-INTENT_SYSTEM_PROMPT = (
-    "You are a security analyst examining an email thread. The thread may have ended with only "
-    "small talk, scheduling, or rapport-building — no sensitive information has been disclosed yet. "
-    "Your task is to project where this sender is heading.\n\n"
-    "Consider: what is the sender's apparent purpose? What would they naturally ask for next, "
-    "given the trajectory of the conversation and their stated or implied role? Multi-stage "
-    "social-engineering attacks deliberately build rapport before making a sensitive ask — look "
-    "past the surface content of the messages to the underlying goal the sender appears to have.\n\n"
-    "You are given the protected information categories for the recipient's organization. Assess "
-    "whether the sender's projected next ask would target any of those categories.\n\n"
-    "Return the required JSON."
-)
-
-
-def project_intent(client: Any, model: str, thread: list[dict[str, Any]],
-                   cats: list[dict[str, str]]) -> dict[str, Any]:
-    user = (
-        "Protected information categories for the recipient's organization:\n"
-        f"{vault_text(cats)}\n\n"
-        "Email thread so far:\n\n"
-        + "\n".join(
-            f"[{t['role']}]: {t.get('body', '').strip()}"
-            for t in thread
-            if t.get("body", "").strip()
-        )
-        + "\n\nProject the sender's likely next ask and whether it would target a protected category."
-    )
-    return call_json(client, model, INTENT_SYSTEM_PROMPT, user, INTENT_SCHEMA)
-
-
-# --------------------------------------------------------------------------
 # Step 3: risk assessment over all predicted correspondences
 # --------------------------------------------------------------------------
 
 def assess_risk(client: Any, model: str, initial_email: dict[str, Any],
-                org_label: str, findings: list[dict[str, Any]],
-                intent_projections: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+                org_label: str, findings: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(findings)
     disclosed = [f for f in findings if f["leakage"].get("recipient_disclosed_protected_info")]
     solicited = [f for f in findings if f["leakage"].get("sender_requested_protected_info")]
@@ -475,13 +395,7 @@ def assess_risk(client: Any, model: str, initial_email: dict[str, Any],
         d["total"] += 1
         d["disclosed"] += int(bool(f["leakage"].get("recipient_disclosed_protected_info")))
 
-    # action distribution across all predicted threads
-    action_dist: dict[str, int] = {}
-    for f in findings:
-        a = f.get("terminal_action", "unknown")
-        action_dist[a] = action_dist.get(a, 0) + 1
-
-    summary: dict[str, Any] = {
+    summary = {
         "recipient_context": org_label,
         "predicted_correspondences": total,
         "where_sender_solicited_protected_info": len(solicited),
@@ -489,19 +403,12 @@ def assess_risk(client: Any, model: str, initial_email: dict[str, Any],
         "disclosure_severity_counts": sev,
         "disclosed_categories": cats_disclosed,
         "personas_that_disengaged_or_flagged": len(flagged),
-        "terminal_action_distribution": action_dist,
         "disclosure_by_persona_vulnerability": by_vuln,
         "earliest_disclosure_turn_min": min(
             [f["leakage"].get("earliest_disclosure_turn", -1) for f in disclosed if f["leakage"].get("earliest_disclosure_turn", -1) >= 0],
             default=-1,
         ),
     }
-    if intent_projections:
-        summary["intent_projections"] = [
-            {k: v for k, v in p.items() if not k.startswith("_")}
-            for p in intent_projections
-        ]
-
     user = (
         "The email being assessed (its opening message):\n"
         f"From-context: the recipient is {org_label}.\n"
@@ -523,69 +430,29 @@ def assess_risk(client: Any, model: str, initial_email: dict[str, Any],
 def classify_email(client: Any, model: str, initial_email: dict[str, Any],
                    org_id: str | None, org_vaults: dict[str, dict[str, Any]],
                    personas: list[dict[str, Any]], branches: int, max_iterations: int,
-                   concurrency: int, progress_prefix: str = "",
-                   scenario_id: str | None = None,
-                   cache: dict[str, Any] | None = None,
-                   cache_lock: threading.Lock | None = None,
-                   cache_save_fn: Any = None,
-                   resume: bool = False,
-                   skip_generation: bool = False) -> dict[str, Any]:
+                   concurrency: int, progress_prefix: str = "") -> dict[str, Any]:
     org_label, cats = abstracted_vault(org_id, org_vaults)
 
     units = [(p, b) for p in personas for b in range(branches)]
     findings: list[dict[str, Any]] = []
     correspondences: list[dict[str, Any]] = []
 
-    def unit_key(persona_id: str, branch: int) -> str:
-        return f"{scenario_id or 'unknown'}__{persona_id}__{branch}"
-
     def run_unit(unit: tuple[dict[str, Any], int]) -> dict[str, Any]:
         persona, branch = unit
-        key = unit_key(persona["id"], branch)
-        cached_unit: dict[str, Any] = (cache or {}).get("units", {}).get(key, {})
-
-        # ---- Step 1: correspondence generation ----
-        if (resume or skip_generation) and cached_unit.get("thread"):
-            corr: dict[str, Any] = {
-                "thread": cached_unit["thread"],
-                "terminal_action": cached_unit.get("terminal_action", "cached"),
-            }
-            print(f"      {key}: reusing cached correspondence", flush=True)
+        corr = predict_correspondence(client, model, persona, org_label, cats, initial_email, max_iterations)
+        if corr["terminal_action"].startswith("error:"):
+            leak = {"sender_requested_protected_info": False, "requested_categories": [],
+                    "recipient_disclosed_protected_info": False, "disclosed_categories": [],
+                    "severity": "none", "earliest_disclosure_turn": -1, "evidence": [],
+                    "reasoning": "generation error", "_error": corr["terminal_action"]}
         else:
-            corr = predict_correspondence(client, model, persona, org_label, cats, initial_email, max_iterations)
-            if cache is not None and cache_lock is not None:
-                with cache_lock:
-                    cache.setdefault("units", {}).setdefault(key, {}).update({
-                        "thread": corr["thread"],
-                        "terminal_action": corr["terminal_action"],
-                    })
-                if cache_save_fn:
-                    cache_save_fn()
-
-        # ---- Step 2: leakage analysis ----
-        if (resume or skip_generation) and cached_unit.get("leakage"):
-            leak: dict[str, Any] = cached_unit["leakage"]
-            print(f"      {key}: reusing cached leakage analysis", flush=True)
-        else:
-            if corr["terminal_action"].startswith("error:"):
+            try:
+                leak = analyze_leakage(client, model, corr["thread"], cats)
+            except Exception as exc:  # noqa: BLE001
                 leak = {"sender_requested_protected_info": False, "requested_categories": [],
                         "recipient_disclosed_protected_info": False, "disclosed_categories": [],
                         "severity": "none", "earliest_disclosure_turn": -1, "evidence": [],
-                        "reasoning": "generation error", "_error": corr["terminal_action"]}
-            else:
-                try:
-                    leak = analyze_leakage(client, model, corr["thread"], cats)
-                except Exception as exc:  # noqa: BLE001
-                    leak = {"sender_requested_protected_info": False, "requested_categories": [],
-                            "recipient_disclosed_protected_info": False, "disclosed_categories": [],
-                            "severity": "none", "earliest_disclosure_turn": -1, "evidence": [],
-                            "reasoning": "leakage-analysis error", "_error": repr(exc)}
-            if cache is not None and cache_lock is not None:
-                with cache_lock:
-                    cache.setdefault("units", {}).setdefault(key, {})["leakage"] = leak
-                if cache_save_fn:
-                    cache_save_fn()
-
+                        "reasoning": "leakage-analysis error", "_error": repr(exc)}
         return {
             "persona_id": persona["id"], "persona_label": persona.get("label", ""),
             "vulnerability_level": persona.get("vulnerability_level", "unknown"),
@@ -598,41 +465,7 @@ def classify_email(client: Any, model: str, initial_email: dict[str, Any],
             findings.append(res)
             correspondences.append({k: res[k] for k in ("persona_id", "branch", "terminal_action", "thread", "leakage")})
 
-    # ---- Step 2b: intent projection for low-leakage scenarios ----
-    # Run when fewer than 10% of threads produced any leakage (catches both the
-    # no-reply case and the scheduling-only case).
-    total_disclosures = sum(1 for f in findings if f["leakage"].get("recipient_disclosed_protected_info"))
-    intent_projections: list[dict[str, Any]] = []
-    if total_disclosures < max(2, len(findings) * 0.1):
-        # Pick the 3 longest threads where the sender actually continued —
-        # these give the most context about the sender's trajectory.
-        candidates = sorted(
-            [f for f in findings if not f.get("terminal_action", "").startswith("error:")],
-            key=lambda f: len(f["thread"]),
-            reverse=True,
-        )[:3]
-        for f in candidates:
-            try:
-                proj = project_intent(client, model, f["thread"], cats)
-                proj["_persona_id"] = f["persona_id"]
-                proj["_branch"] = f["branch"]
-                intent_projections.append(proj)
-            except Exception as exc:  # noqa: BLE001
-                print(f"      intent projection error ({f['persona_id']}): {exc!r}", flush=True)
-
-    risk = assess_risk(client, model, initial_email, org_label, findings,
-                       intent_projections=intent_projections or None)
-
-    # Persist intent projections to cache at scenario level so export_to_viewer can read them
-    if intent_projections and cache is not None and cache_lock is not None and scenario_id:
-        with cache_lock:
-            cache.setdefault("scenarios", {}).setdefault(scenario_id, {})["intent_projections"] = [
-                {k: v for k, v in p.items() if not k.startswith("_")}
-                for p in intent_projections
-            ]
-        if cache_save_fn:
-            cache_save_fn()
-
+    risk = assess_risk(client, model, initial_email, org_label, findings)
     return {
         "org_id": org_id, "org_label": org_label,
         "risk": risk,
@@ -640,7 +473,6 @@ def classify_email(client: Any, model: str, initial_email: dict[str, Any],
         "risk_score": risk.get("risk_score"),
         "findings": findings,
         "correspondences": correspondences,
-        "intent_projections": intent_projections,
     }
 
 
@@ -679,12 +511,6 @@ def main() -> int:
     ap.add_argument("--json-out", type=Path, default=None)
     ap.add_argument("--plot-out", type=Path, default=Path("predictive_confusion_matrix.png"))
     ap.add_argument("--no-plot", action="store_true")
-    ap.add_argument("--cache-file", type=Path, default=Path("predictive_cache.json"),
-                    help="path to save/load intermediate results (default: predictive_cache.json)")
-    ap.add_argument("--resume", action="store_true",
-                    help="skip persona-branch units already completed in --cache-file")
-    ap.add_argument("--skip-generation", action="store_true",
-                    help="load correspondences from --cache-file and re-run only leakage + risk assessment")
     ap.add_argument("--dry-run", action="store_true", help="print the work plan + cost estimate and exit")
     args = ap.parse_args()
 
@@ -727,23 +553,6 @@ def main() -> int:
         return 2
     client = anthropic.Anthropic()
 
-    # ------------------------------------------------------------------
-    # Cache setup
-    # ------------------------------------------------------------------
-    cache: dict[str, Any] = {}
-    cache_lock = threading.Lock()
-
-    if args.cache_file.exists() and (args.resume or args.skip_generation):
-        try:
-            cache = json.loads(args.cache_file.read_text())
-            n_units = len(cache.get("units", {}))
-            print(f"Loaded cache: {n_units} unit(s) from {args.cache_file}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"Warning: could not load cache file {args.cache_file}: {exc}", file=sys.stderr)
-
-    def save_cache() -> None:
-        args.cache_file.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
-
     verdicts: list[dict[str, Any]] = []
     artifacts: list[dict[str, Any]] = []
     for i, sc in enumerate(scenarios, 1):
@@ -757,10 +566,7 @@ def main() -> int:
         print(f"\n[{i}/{len(scenarios)}] {sc['id']} ({sc['scenario_type']}) defended-org={org} ...", flush=True)
         try:
             result = classify_email(client, args.model, init, org, org_vaults, gp,
-                                    args.branches, args.max_iterations, args.concurrency,
-                                    scenario_id=sc["id"],
-                                    cache=cache, cache_lock=cache_lock, cache_save_fn=save_cache,
-                                    resume=args.resume, skip_generation=args.skip_generation)
+                                    args.branches, args.max_iterations, args.concurrency)
         except Exception as exc:  # noqa: BLE001
             print(f"    ERROR: {exc!r}", file=sys.stderr)
             verdicts.append({"id": sc["id"], "name": sc.get("name"), "scenario_type": sc["scenario_type"],
@@ -793,7 +599,7 @@ def main() -> int:
                 "model": args.model, "branches": args.branches, "max_iterations": args.max_iterations,
                 "verdicts": verdicts, "artifacts": artifacts,
             }
-        }, indent=2, ensure_ascii=False), encoding="utf-8")
+        }, indent=2, ensure_ascii=False))
         print(f"\nwrote {args.json_out}")
 
     if not args.no_plot:
@@ -824,7 +630,7 @@ def _report(verdicts: list[dict[str, Any]], model: str) -> None:
         c = m = None
     W = 78
     print("\n" + "=" * W)
-    print("PREDICTIVE CLASSIFIER -- verdict per scenario (initial email + predicted leakage)")
+    print("PREDICTIVE CLASSIFIER — verdict per scenario (initial email + predicted leakage)")
     print(f"(Claude {model}; classifier never sees scenario type, sender, or attacker goal)")
     print("=" * W)
     print(f"\n{'scenario':<12}{'type':<24}{'risk':>6}  {'verdict':<11} truth")

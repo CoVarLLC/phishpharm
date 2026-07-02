@@ -187,43 +187,6 @@
   .rightbar-section ul {
     margin: 4px 0 0 0; padding-left: 18px;
   }
-  .intent-section {
-    margin: 24px 0 8px 0;
-    border-top: 2px solid #e8eaed;
-    padding-top: 14px;
-  }
-  .intent-section-title {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.5px; color: #5f6368; margin-bottom: 10px;
-  }
-  .intent-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 8px 10px;
-    margin-bottom: 8px;
-    background: #fafafa;
-    font-size: 12px;
-  }
-  .intent-card + .intent-card { margin-top: 0; }
-  .intent-card .ic-row { margin-bottom: 4px; }
-  .intent-card .ic-label {
-    font-size: 10px; color: #5f6368; text-transform: uppercase;
-    letter-spacing: 0.3px; margin-bottom: 1px;
-  }
-  .intent-card .ic-val { color: #202124; line-height: 1.4; }
-  .intent-card.targets-protected {
-    border-color: #f28b82;
-    background: #fff8f7;
-  }
-  .intent-card .ic-badge {
-    display: inline-block;
-    font-size: 10px; font-weight: 600;
-    padding: 1px 6px; border-radius: 10px;
-    margin-right: 4px; margin-bottom: 4px;
-  }
-  .ic-badge.danger { background: #fce8e6; color: #c5221f; }
-  .ic-badge.safe   { background: #e6f4ea; color: #137333; }
-  .ic-badge.cat    { background: #e8eaed; color: #3c4043; }
   .rightbar-section li {
     font-size: 12px; color: #202124; margin-bottom: 3px; line-height: 1.4;
   }
@@ -588,7 +551,7 @@ function renderMain() {
     const color = isSender ? senderColor : recipientColor;
     const inits = initials(fromName);
     const dateStr = fakeDate(i);
-    const highlights = getHighlights(c.correspondence_id, i, t.highlights);
+    const highlights = getHighlights(c.correspondence_id, t.turn_index, t.highlights);
     const bodyHtml = renderBody(t.body || '', highlights, t.role);
 
     const redFlags = (t.extra && t.extra.red_flags_noticed) || [];
@@ -624,31 +587,6 @@ function renderMain() {
       </div>`;
   }).join('');
 
-  const intentHtml = (c.intent_projections && c.intent_projections.length) ? `
-    <div class="intent-section">
-      <div class="intent-section-title">Intent projection</div>
-      ${c.intent_projections.map(p => {
-        const danger = p.targets_protected_category;
-        const cats = (p.targeted_categories || []).map(cat =>
-          `<span class="ic-badge cat">${escapeHtml(cat)}</span>`).join('');
-        const conf = p.confidence || '';
-        const confBadge = `<span class="ic-badge ${danger ? 'danger' : 'safe'}">${escapeHtml(conf)} confidence</span>`;
-        return `<div class="intent-card ${danger ? 'targets-protected' : ''}">
-          <div class="ic-row">
-            ${danger ? '<span class="ic-badge danger">targets protected info</span>' : '<span class="ic-badge safe">no protected categories</span>'}
-            ${confBadge}
-          </div>
-          <div class="ic-row"><div class="ic-label">Apparent goal</div>
-            <div class="ic-val">${escapeHtml(p.apparent_sender_goal || '')}</div></div>
-          <div class="ic-row"><div class="ic-label">Projected next ask</div>
-            <div class="ic-val">${escapeHtml(p.projected_next_ask || '')}</div></div>
-          ${cats ? `<div class="ic-row"><div class="ic-label">Targeted categories</div><div class="ic-val">${cats}</div></div>` : ''}
-          <div class="ic-row"><div class="ic-label">Reasoning</div>
-            <div class="ic-val">${escapeHtml(p.reasoning || '')}</div></div>
-        </div>`;
-      }).join('')}
-    </div>` : '';
-
   main.innerHTML = `
     <div class="main-inner">
       <div class="thread-header">
@@ -664,7 +602,6 @@ function renderMain() {
         </div>
       </div>
       ${cards}
-      ${intentHtml}
     </div>`;
 
   document.getElementById('toggle-reasoning').addEventListener('click', () => {
